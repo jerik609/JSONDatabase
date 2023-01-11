@@ -21,7 +21,7 @@ public class DatabaseResult<T> {
 
     public static class Builder<T> {
         private ResponseCode responseCode;
-        private T data;
+        private T data = null;
 
         public Builder<T> responseCode(ResponseCode responseCode) {
             this.responseCode = responseCode;
