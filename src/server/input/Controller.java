@@ -21,10 +21,10 @@ public class Controller {
     public void run() {
         do {
             final var input = scanner.nextLine();
-            String[] commandArray = input.split(" ");
+            String[] commandArray = Utils.splitOffFirst(input, ' ');
             executor.acceptCommand(commandFactory.getCommandFromAction(
                     Action.from(commandArray[0]),
-                    Arrays.copyOfRange(commandArray, 1, commandArray.length)));
+                    commandArray[1]));
             executor.execute();
         } while (!stop);
     }

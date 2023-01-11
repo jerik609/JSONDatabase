@@ -6,16 +6,16 @@ import server.input.Command;
 
 public class DeleteCommand implements Command {
     private final Database<String> database;
-    private final String[] commandStr;
+    private final String commandParams;
 
-    public DeleteCommand(Database<String> database, String[] commandStr) {
+    public DeleteCommand(Database<String> database, String commandParams) {
         this.database = database;
-        this.commandStr = commandStr;
+        this.commandParams = commandParams;
     }
 
     @Override
     public void execute() {
-        final var result = database.delete(commandStr[0]);
+        final var result = database.delete(commandParams);
         if (result.getResponseCode() == ResponseCode.OK) {
             System.out.println("OK");
         } else {

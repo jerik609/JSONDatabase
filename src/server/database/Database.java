@@ -17,7 +17,7 @@ public class Database<T> {
         } else {
             builder.responseCode(ResponseCode.OK);
         }
-        builder.data(null);
+        builder.data(item);
 
         return builder.build();
     }
