@@ -16,9 +16,9 @@ public class Application {
     public void start() {
         // set logging, due to structure of the academy project, we do it in the code
         var rootLogger = LogManager.getLogManager().getLogger("");
-        rootLogger.setLevel(Level.FINE);
+        rootLogger.setLevel(Level.FINEST);
         for (Handler handler : rootLogger.getHandlers()) {
-            handler.setLevel(Level.FINE);
+            handler.setLevel(Level.FINEST);
             log.fine("Setting log level for handler: " + handler);
         }
 
@@ -34,6 +34,6 @@ public class Application {
         final var server = new Server();
         server.start();
 
-        //controller.start();
+        controller.start();
     }
 }
