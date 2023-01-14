@@ -2,7 +2,6 @@ package server.input;
 
 import server.database.Database;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Controller {
@@ -18,7 +17,7 @@ public class Controller {
         commandFactory = new CommandFactory(this, database);
     }
 
-    public void run() {
+    public void start() {
         do {
             final var input = scanner.nextLine();
             String[] commandArray = Utils.splitOffFirst(input, ' ');

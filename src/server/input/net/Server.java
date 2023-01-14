@@ -48,15 +48,16 @@ public class Server implements Runnable {
                 final var serverSocket = new ServerSocket(LISTENER_PORT);
                 )
         {
-            System.out.println("Server: Starting listening for client connections.");
+            //System.out.println("Server: Starting listening for client connections.");
+            System.out.println("Server started!");
             serverSocket.setSoTimeout(SERVER_SOCKET_TIMEOUT_MS);
             do {
                 try {
                     final var socket = serverSocket.accept();
-                    System.out.println("Server: New client established connection.");
+                    //System.out.println("Server: New client established connection.");
                     pool.submit(new Session(socket, stop));
                 } catch (SocketTimeoutException e) {
-                    System.out.println("Server: Server socket timeout, just evaluate stop and continue loop");
+                    //System.out.println("Server: Server socket timeout, just evaluate stop and continue loop");
                 }
             } while (!stop.get());
         } catch (IOException e) {
@@ -66,9 +67,9 @@ public class Server implements Runnable {
 
     public void stop() {
         if (isRunning.get()) {
-            System.out.println("Server: Server not running or already shutting down, nothing to be done.");
+            //System.out.println("Server: Server not running or already shutting down, nothing to be done.");
         } else {
-            System.out.println("Server: Stopping the server gracefully.");
+            //System.out.println("Server: Stopping the server gracefully.");
             // perform shutdown - signal threads and wait for completion
             stop.getAndSet(true);
             pool.shutdown();
@@ -82,7 +83,7 @@ public class Server implements Runnable {
             // ensure consistent state in case we'd like to start the server again
             stop.getAndSet(false);
             isRunning.getAndSet(false);
-            System.out.println("Server: Server stopped gracefully.");
+            //System.out.println("Server: Server stopped gracefully.");
         }
     }
 
@@ -95,7 +96,7 @@ public class Server implements Runnable {
         private Session(Socket socket, AtomicBoolean stop) {
             this.socket = socket;
             this.stop = stop;
-            System.out.println("[" + sessionId + "]: Created.");
+            //System.out.println("[" + sessionId + "]: Created.");
         }
 
         @Override
@@ -107,23 +108,24 @@ public class Server implements Runnable {
             }
             try (
                     socket;
-                    final var inputStream = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-                    final var outputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                    final var inputStream = new DataInputStream(socket.getInputStream());
+                    final var outputStream = new DataOutputStream(socket.getOutputStream());
                     )
             {
-                System.out.println("[" + sessionId + "]: Starting.");
+                //System.out.println("[" + sessionId + "]: Starting.");
                 String input;
                 do {
                     try {
                         input = inputStream.readUTF();
-                        System.out.println("[" + sessionId + "]: Client says: " + input);
-                        System.out.println("[" + sessionId + "]: Echoing: " + input);
+                        //System.out.println("[" + sessionId + "]: Client says: " + input);
+                        System.out.println("Received: " + input);
+                        System.out.println("Sent: " + input);
                         outputStream.writeUTF(input);
                     } catch (SocketTimeoutException e) {
-                        System.out.println("[" + sessionId + "]: Socket timeout: just evaluate stop and continue loop");
+                        //System.out.println("[" + sessionId + "]: Socket timeout: just evaluate stop and continue loop");
                     }
-                } while (!stop.get());
-                System.out.println("[" + sessionId + "]: Done, terminating.");
+                } while (!stop.get() && socket.isConnected());
+                //System.out.println("[" + sessionId + "]: Done, terminating.");
             } catch (IOException e) {
                 throw new RuntimeException("[" + sessionId + "]: failed.");
             }

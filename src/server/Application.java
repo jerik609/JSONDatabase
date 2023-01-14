@@ -8,7 +8,7 @@ import server.input.net.Server;
 import java.util.Scanner;
 
 public class Application {
-    public void run() {
+    public void start() {
         final var scanner = new Scanner(System.in);
         final var executor = new Executor();
         final var database = new Database<String>("");
@@ -19,8 +19,8 @@ public class Application {
         // even the arch will be a bit retro ... we will use fork join pool
         // but a reactive pattern would be more suitable
         final var server = new Server();
-        server.run();
+        server.start();
 
-        //controller.run();
+        controller.start();
     }
 }
