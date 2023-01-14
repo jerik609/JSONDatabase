@@ -11,7 +11,7 @@ public class Application {
     public void start() {
         final var scanner = new Scanner(System.in);
         final var executor = new Executor();
-        final var database = new Database<String>("");
+        final var database = new Database<String>(1000, "");
         final var controller = new Controller(scanner, executor, database);
 
         // we'll wrap this in input and provide as dependency injection, but let's

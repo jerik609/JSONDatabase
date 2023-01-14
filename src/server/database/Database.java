@@ -1,20 +1,21 @@
 package server.database;
 
-import javax.xml.crypto.Data;
 import java.util.HashMap;
 
 public class Database<T> {
-    private static final int DATABASE_CAPACITY = 100;
+    private final int capacity;
     private final T emptyValue;
 
-    private static boolean isOutOfBounds(int index) {
-        return index > DATABASE_CAPACITY;
+    private boolean isOutOfBounds(int index) {
+        return index > capacity;
     }
 
-    private final HashMap<Integer, T> database = new HashMap<>(DATABASE_CAPACITY);
+    private final HashMap<Integer, T> database;
 
-    public Database(T emptyValue) {
+    public Database(int capacity, T emptyValue) {
+        this.capacity = capacity;
         this.emptyValue = emptyValue;
+        this.database = new HashMap<>(capacity);
     }
 
     public DatabaseResult<T> get(Integer key) {
