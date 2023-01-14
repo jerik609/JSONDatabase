@@ -1,4 +1,4 @@
-package server.input;
+package server.input.common;
 
 public class Utils {
     public static String[] splitOffFirst(String input, char delimiter) {

@@ -1,6 +1,5 @@
-package server.input.commands;
+package server.input.command;
 
-import server.input.Command;
 import server.input.Controller;
 
 public class ExitCommand implements Command {

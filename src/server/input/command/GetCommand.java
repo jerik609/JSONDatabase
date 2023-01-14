@@ -1,14 +1,13 @@
-package server.input.commands;
+package server.input.command;
 
 import server.database.Database;
 import server.database.ResponseCode;
-import server.input.Command;
 
-public class DeleteCommand implements Command {
+public class GetCommand implements Command {
     private final Database<String> database;
     private final String commandParams;
 
-    public DeleteCommand(Database<String> database, String commandParams) {
+    public GetCommand(Database<String> database, String commandParams) {
         this.database = database;
         this.commandParams = commandParams;
     }
@@ -16,9 +15,10 @@ public class DeleteCommand implements Command {
     @Override
     public void execute() {
         final var index = Integer.parseInt(commandParams);
-        final var result = database.delete(index);
+        final var result = database.get(index);
         if (result.getResponseCode() == ResponseCode.OK) {
-            System.out.println("OK");
+            System.out.println(result.getData()
+                    .orElseThrow(() -> new RuntimeException("empty result despite success!?")));
         } else {
             System.out.println("ERROR");
         }

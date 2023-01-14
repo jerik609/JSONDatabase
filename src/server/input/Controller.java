@@ -1,6 +1,9 @@
 package server.input;
 
 import server.database.Database;
+import server.input.command.Action;
+import server.input.command.CommandFactory;
+import server.input.common.Utils;
 
 import java.util.Scanner;
 
@@ -24,7 +27,7 @@ public class Controller {
             executor.acceptCommand(commandFactory.getCommandFromAction(
                     Action.from(commandArray[0]),
                     commandArray[1]));
-            executor.execute();
+            executor.run();
         } while (!stop);
     }
 

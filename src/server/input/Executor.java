@@ -1,16 +1,19 @@
 package server.input;
 
+import server.input.command.Command;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Executor {
+public class Executor implements Runnable {
     private final Queue<Command> commandQueue = new LinkedList<>();
 
     public void acceptCommand(Command command) {
         commandQueue.add(command);
     }
 
-    public void execute() {
+    @Override
+    public void run() {
         while (!commandQueue.isEmpty()) {
             commandQueue.remove().execute();
         }

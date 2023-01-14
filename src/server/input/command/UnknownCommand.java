@@ -1,6 +1,4 @@
-package server.input.commands;
-
-import server.input.Command;
+package server.input.command;
 
 public class UnknownCommand implements Command {
     @Override
