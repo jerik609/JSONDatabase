@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 // server
 
@@ -25,12 +26,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 // TODO: the idea will not work -> we need something that interrupts the wait and then checks for stop
 //  maybe the fork join pool does that on its own?
 public class Server implements Runnable {
+    private static final Pattern pattern = Pattern.compile("(# \\d+)");
     private static final int LISTENER_PORT = 34567;
     private static final int SERVER_SOCKET_TIMEOUT_MS = 10000;
 
     private final ForkJoinPool pool; //TODO: project loom, where are you?
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private final AtomicBoolean stop = new AtomicBoolean(false);
+
+    private static int getRecordNoFromResponse(String response) {
+        final var matcher = pattern.matcher(response);
+        if (matcher.find()) {
+            final var group = matcher.group(0);
+            return Integer.parseInt(group.split(" ")[1]);
+        }
+        throw new RuntimeException("Invalid response: " + response);
+    }
 
     public Server() {
         pool = new ForkJoinPool(4);
@@ -119,8 +130,10 @@ public class Server implements Runnable {
                         input = inputStream.readUTF();
                         //System.out.println("[" + sessionId + "]: Client says: " + input);
                         System.out.println("Received: " + input);
-                        System.out.println("Sent: " + input);
-                        outputStream.writeUTF(input);
+                        final var recordNo = getRecordNoFromResponse(input);
+                        final var response = "A record # " + recordNo + " was sent!";
+                        System.out.println("Sent: " + response);
+                        outputStream.writeUTF(response);
                     } catch (SocketTimeoutException e) {
                         //System.out.println("[" + sessionId + "]: Socket timeout: just evaluate stop and continue loop");
                     }

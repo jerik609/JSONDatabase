@@ -4,12 +4,24 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Client {
+    private static final Pattern pattern = Pattern.compile("(# \\d+)");
     private static final String SERVER_ADDRESS = "127.0.0.1";
     private static final int SERVER_PORT = 34567;
+    private static final int RECORD_NO = 12;
 
     private final Scanner scanner = new Scanner(System.in);
+
+    private static int getRecordNoFromResponse(String response) {
+        final var matcher = pattern.matcher(response);
+        if (matcher.find()) {
+            final var group = matcher.group(0);
+            return Integer.parseInt(group.split(" ")[1]);
+        }
+        throw new RuntimeException("Invalid response: " + response);
+    }
 
     public void start() {
         try (
@@ -20,13 +32,15 @@ public class Client {
         {
             System.out.println("Client started!");
             String input;
-            do {
+            //do {
                 //System.out.println("Provide input:");
-                input = scanner.nextLine();
+                //input = scanner.nextLine();
+                input = "Give me a record # " + RECORD_NO;
                 outputStream.writeUTF(input);
                 System.out.println("Sent: " + input);
-                System.out.println("Received: " + inputStream.readUTF());
-            } while (!input.equals("DONE"));
+                final var responseRecord = getRecordNoFromResponse(inputStream.readUTF());
+                System.out.println("Received: A record # " + responseRecord + " was sent!");
+            //} while (!input.equals("DONE"));
         } catch (UnknownHostException e) {
             throw new RuntimeException("Unknown host: " + SERVER_ADDRESS + ":" + SERVER_PORT);
         } catch (IOException e) {
@@ -35,7 +49,7 @@ public class Client {
         //System.out.println("Finished!");
     }
 
-    public static void main(String[] args) {
+    public static void main2(String[] args) {
         var client = new Client();
         client.start();
     }
