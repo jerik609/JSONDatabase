@@ -1,13 +1,16 @@
 package server.interfaces;
 
+import server.interfaces.remote.Session;
 import server.interfaces.remote.data.Request;
 import server.interfaces.remote.data.Response;
 
+import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Logger;
 
 /**
@@ -22,6 +25,8 @@ public class Exchange {
     /* Map of FIFO queues for client responses, mapping by sessionId */
     // TODO: we should have a process which removes old data of failed sessions
     private final ConcurrentMap<String, ConcurrentLinkedQueue<Response>> responseMap = new ConcurrentHashMap<>();
+    /* map of all sessions by session ids */
+    private final ConcurrentLinkedQueue<Session> sessions = new ConcurrentLinkedQueue<>();
 
     /**
      * Enqueue request to the tail of the request queue.
@@ -91,5 +96,13 @@ public class Exchange {
         log.fine("Removing all data for session: " + sessionId);
         requestQueue.removeIf(request -> request.sessionId().equals(sessionId));
         responseMap.remove(sessionId);
+    }
+
+    public void addSession(Session session) {
+        sessions.add(session);
+    }
+
+    public ConcurrentLinkedQueue<Session> getSessions() {
+        return sessions;
     }
 }

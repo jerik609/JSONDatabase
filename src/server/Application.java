@@ -3,9 +3,7 @@ package server;
 import server.interfaces.Exchange;
 import server.interfaces.local.Console;
 import server.interfaces.local.LocalCommandFactory;
-import server.interfaces.remote.DataWorker;
-import server.interfaces.remote.RemoteCommandFactory;
-import server.interfaces.remote.SocketServer;
+import server.interfaces.remote.*;
 import server.database.Database;
 import server.interfaces.Executor;
 
@@ -63,16 +61,20 @@ public class Application {
         final var console = new Console(stopFlag, scanner, localCommandFactory, executor);
 
         // remote context
-        final var pool = ForkJoinPool.commonPool();
+        final var pool = new ForkJoinPool(6);
         final var exchange = new Exchange();
         final var remoteCommandFactory = new RemoteCommandFactory(stopFlag, database, exchange);
         final var dataWorker = new DataWorker(stopFlag, pool, exchange, remoteCommandFactory, executor);
+        final var dataReader = new DataReader(stopFlag, pool, exchange);
+        final var dataSender = new DataSender(stopFlag, pool, exchange);
         final var socketServer = new SocketServer(stopFlag, pool, exchange);
 
         System.out.println("Server started!");
 
         // start the application
+        dataSender.start();
         dataWorker.start();
+        dataReader.start();
         socketServer.start();
 
         //console.start();

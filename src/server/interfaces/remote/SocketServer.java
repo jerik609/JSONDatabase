@@ -65,7 +65,10 @@ public class SocketServer implements Runnable {
                 try {
                     final var socket = serverSocket.accept();
                     log.fine("New client established connection.");
-                    pool.submit(new Session(stop, socket, exchange));
+
+                    exchange.addSession(new Session(socket));
+
+                    //pool.submit(new Session(stop, socket, exchange));
                 } catch (SocketTimeoutException e) {
                     //log.finest("Server socket timeout, just evaluate stop and continue loop");
                 }

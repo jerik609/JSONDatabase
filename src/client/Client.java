@@ -60,7 +60,6 @@ public class Client {
                     System.out.println("Provide input:");
                     input = scanner.nextLine();
 
-
                     outputStream.writeUTF(input);
                     System.out.println("Sent: " + input);
 
