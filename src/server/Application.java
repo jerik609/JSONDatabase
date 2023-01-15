@@ -9,7 +9,6 @@ import server.interfaces.remote.SocketServer;
 import server.database.Database;
 import server.interfaces.Executor;
 
-import java.io.IOException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -39,20 +38,7 @@ public class Application {
             }
         };
         var rootLogger = LogManager.getLogManager().getLogger("");
-
-
-
         rootLogger.setLevel(Level.FINEST); // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-        for (Handler handler : rootLogger.getHandlers()) {
-            rootLogger.removeHandler(handler);
-        }
-
-        try {
-            rootLogger.addHandler(new FileHandler("hello_hello.txt"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         for (Handler handler : rootLogger.getHandlers()) {
             handler.setLevel(Level.FINEST);
             handler.setFormatter(formatter);

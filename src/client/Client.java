@@ -80,7 +80,6 @@ public class Client {
             System.out.println("Exception: " + e);
             e.printStackTrace();
             throw new RuntimeException("Client failed: " + e);
-
         }
         //System.out.println("Finished!");
     }
