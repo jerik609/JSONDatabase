@@ -6,7 +6,11 @@ import server.interfaces.Command;
 import server.interfaces.Exchange;
 import server.interfaces.remote.data.Response;
 
+import java.util.logging.Logger;
+
 public class RemoteDeleteCommand implements Command {
+    private static final Logger log = Logger.getLogger(RemoteDeleteCommand.class.getSimpleName());
+
     private final Database<String> database;
     private final Exchange exchange;
     private final String sessionId;
@@ -21,14 +25,16 @@ public class RemoteDeleteCommand implements Command {
 
     @Override
     public void execute() {
+        log.fine("Executing command for " + commandParams);
         final var index = Integer.parseInt(commandParams);
         final var result = database.delete(index);
         if (result.getResponseCode() == ResponseCode.OK) {
-            //exchange.pushResponse(new Response(sessionId, "Successfully deleted data for: " + commandParams));
+            log.fine("Success for: " + commandParams);
             exchange.pushResponse(new Response(sessionId, "OK"));
         } else {
-            //exchange.pushResponse(new Response(sessionId, "Failed to delete data for: " + commandParams));
+            log.fine("Failed for: " + commandParams);
             exchange.pushResponse(new Response(sessionId, "ERROR"));
         }
+        log.fine("Pushed response for result: " + result);
     }
 }

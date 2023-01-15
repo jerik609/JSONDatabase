@@ -7,7 +7,11 @@ import server.interfaces.Exchange;
 import server.interfaces.common.Utils;
 import server.interfaces.remote.data.Response;
 
+import java.util.logging.Logger;
+
 public class RemoteSetCommand implements Command {
+    private static final Logger log = Logger.getLogger(RemoteGetCommand.class.getSimpleName());
+
     private final Database<String> database;
     private final Exchange exchange;
     private final String sessionId;
@@ -18,19 +22,22 @@ public class RemoteSetCommand implements Command {
         this.exchange = exchange;
         this.sessionId = sessionId;
         this.commandParams = commandParams;
+        log.fine("Created command.");
     }
 
     @Override
     public void execute() {
+        log.fine("Executing command for " + commandParams);
         final var params = Utils.splitOffFirst(commandParams, ' ');
         final var index = Integer.parseInt(params[0]);
         final var result = database.set(index, params[1]);
         if (result.getResponseCode() == ResponseCode.OK) {
-            //exchange.pushResponse(new Response(sessionId, "Successfully set record: " + commandParams));
+            log.fine("Success for: " + commandParams);
             exchange.pushResponse(new Response(sessionId, "OK"));
         } else {
-            //exchange.pushResponse(new Response(sessionId, "Failed to set record: " + commandParams));
+            log.fine("Failed for: " + commandParams);
             exchange.pushResponse(new Response(sessionId, "ERROR"));
         }
+        log.fine("Pushed response for result: " + result);
     }
 }

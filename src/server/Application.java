@@ -38,7 +38,7 @@ public class Application {
             }
         };
         var rootLogger = LogManager.getLogManager().getLogger("");
-        rootLogger.setLevel(Level.INFO);
+        rootLogger.setLevel(Level.FINEST);
         for (Handler handler : rootLogger.getHandlers()) {
             handler.setLevel(Level.FINEST);
             handler.setFormatter(formatter);
@@ -76,13 +76,15 @@ public class Application {
 
         //console.start();
 
+        //TODO: remove after tests are done?
         while (!stopFlag.get()) {
             try {
-                sleep(500);
+                sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
+        System.exit(0);
 
         // sync thread pool shutdown
         pool.shutdown();

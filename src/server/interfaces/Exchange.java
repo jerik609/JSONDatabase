@@ -76,7 +76,7 @@ public class Exchange {
         }
     }
 
-    public boolean hasResponses(String sessionId) {
+    public boolean hasPendingResponses(String sessionId) {
         if (!responseMap.containsKey(sessionId)) {
             return false;
         }

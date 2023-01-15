@@ -25,19 +25,18 @@ public class RemoteGetCommand implements Command {
 
     @Override
     public void execute() {
+        log.fine("Executing command for " + commandParams);
         final var index = Integer.parseInt(commandParams);
         final var result = database.get(index);
         if (result.getResponseCode() == ResponseCode.OK) {
-//            exchange.pushResponse(
-//                    new Response(sessionId, "The data: " + result.getData()
-//                            .orElseThrow(() -> new RuntimeException("empty result despite success!?"))));
+            log.fine("Success for: " + commandParams);
             exchange.pushResponse(
                     new Response(sessionId, result.getData()
-                            .orElseThrow(() -> new RuntimeException("empty result despite success!?"))));
+                            .orElseThrow(() -> new RuntimeException("Database query was successful, but returned no data."))));
         } else {
-            //exchange.pushResponse(new Response(sessionId, "Failed to get data for: " + commandParams));
+            log.fine("Failed for: " + commandParams);
             exchange.pushResponse(new Response(sessionId, "ERROR"));
         }
-        log.info("Pushed response for result: " + result);
+        log.fine("Pushed response for result: " + result);
     }
 }
