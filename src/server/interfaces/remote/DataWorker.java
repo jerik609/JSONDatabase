@@ -1,6 +1,9 @@
 package server.interfaces.remote;
 
 import server.interfaces.Exchange;
+import server.interfaces.Executor;
+import server.interfaces.common.Action;
+import server.interfaces.common.Utils;
 import server.interfaces.remote.data.Response;
 
 import java.util.concurrent.ForkJoinPool;
@@ -20,12 +23,14 @@ public class DataWorker implements Runnable {
     private final ForkJoinPool pool;
     private final Exchange exchange;
     private final RemoteCommandFactory remoteCommandFactory;
+    private final Executor executor;
 
-    public DataWorker(AtomicBoolean stop, ForkJoinPool pool, Exchange exchange, RemoteCommandFactory remoteCommandFactory) {
+    public DataWorker(AtomicBoolean stop, ForkJoinPool pool, Exchange exchange, RemoteCommandFactory remoteCommandFactory, Executor executor) {
         this.stop = stop;
         this.pool = pool;
         this.exchange = exchange;
         this.remoteCommandFactory = remoteCommandFactory;
+        this.executor = executor;
     }
 
     public void start() {
@@ -54,19 +59,14 @@ public class DataWorker implements Runnable {
 
         while (!stop.get() && isRunning.get()) {
             exchange.takeRequest().ifPresent(
-
-
-
-                    //TODO: call the command processor here:
-                    // provide the response queue or just the exchange?
-                    // command processor will generate the response and put it in the queue
-
-                    //request ->
-
-
-
-                    request -> exchange.pushResponse(new Response(request.sessionId(), "ECHO: " + request.payload()))
-            );
+                request -> {
+                    String[] commandArray = Utils.splitOffFirst(request.payload(), ' ');
+                    executor.acceptCommand(remoteCommandFactory.getRemoteCommandFromRequest(
+                            request.sessionId(),
+                            Action.from(commandArray[0]),
+                            commandArray[1]));
+                    executor.run();
+                });
         }
 
         log.fine("Stopped.");

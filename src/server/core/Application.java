@@ -63,7 +63,7 @@ public class Application {
         final var pool = new ForkJoinPool(4);
         final var exchange = new Exchange();
         final var remoteCommandFactory = new RemoteCommandFactory(stopFlag, database, exchange);
-        final var dataWorker = new DataWorker(stopFlag, pool, exchange, remoteCommandFactory);
+        final var dataWorker = new DataWorker(stopFlag, pool, exchange, remoteCommandFactory, executor);
         final var socketServer = new SocketServer(stopFlag, pool, exchange);
 
         // start the application

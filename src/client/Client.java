@@ -32,15 +32,17 @@ public class Client {
         {
             System.out.println("Client started!");
             String input;
-            //do {
-                //System.out.println("Provide input:");
-                //input = scanner.nextLine();
-                input = "Give me a record # " + RECORD_NO;
+            do {
+                System.out.println("Provide input:");
+                input = scanner.nextLine();
+                //input = "Give me a record # " + RECORD_NO;
+                //input = "Give me a record # " + RECORD_NO;
                 outputStream.writeUTF(input);
                 System.out.println("Sent: " + input);
-                final var responseRecord = getRecordNoFromResponse(inputStream.readUTF());
-                System.out.println("Received: A record # " + responseRecord + " was sent!");
-            //} while (!input.equals("DONE"));
+                final var responseRecord = inputStream.readUTF(); //getRecordNoFromResponse(inputStream.readUTF());
+                System.out.println("Response: " + responseRecord);
+                //System.out.println("Received: A record # " + responseRecord + " was sent!");
+            } while (!input.equals("DONE"));
         } catch (UnknownHostException e) {
             throw new RuntimeException("Unknown host: " + SERVER_ADDRESS + ":" + SERVER_PORT);
         } catch (IOException e) {
