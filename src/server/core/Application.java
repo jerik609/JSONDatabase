@@ -1,10 +1,10 @@
-package server;
+package server.core;
 
-import server.core.data.Exchange;
-import server.core.workers.DataWorker;
-import server.core.workers.SocketServer;
+import server.interfaces.Exchange;
+import server.interfaces.remote.workers.DataWorker;
+import server.interfaces.remote.workers.SocketServer;
 import server.database.Database;
-import server.input.Executor;
+import server.interfaces.Executor;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;

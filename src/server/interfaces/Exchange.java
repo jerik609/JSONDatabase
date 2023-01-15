@@ -1,7 +1,7 @@
-package server.core.data;
+package server.interfaces;
 
-import server.core.data.Request;
-import server.core.data.Response;
+import server.interfaces.remote.data.Request;
+import server.interfaces.remote.data.Response;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;

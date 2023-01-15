@@ -1,6 +1,6 @@
-package server.core.workers;
+package server.interfaces.remote.workers;
 
-import server.core.data.Exchange;
+import server.interfaces.Exchange;
 
 import java.io.IOException;
 import java.net.ServerSocket;

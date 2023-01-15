@@ -1,10 +1,10 @@
-package server;
+package server.core;
 
 import server.database.Database;
-import server.input.Executor;
-import server.input.command.Action;
-import server.input.command.CommandFactory;
-import server.input.common.Utils;
+import server.interfaces.Executor;
+import server.interfaces.commands.Action;
+import server.interfaces.commands.CommandFactory;
+import server.interfaces.common.Utils;
 
 import java.util.Scanner;
 

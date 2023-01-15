@@ -1,8 +1,8 @@
-package server.input.command;
+package server.interfaces.commands;
 
 import server.database.Database;
 import server.database.ResponseCode;
-import server.input.common.Utils;
+import server.interfaces.common.Utils;
 
 public class SetCommand implements Command {
     private final Database<String> database;

@@ -1,6 +1,6 @@
-package server.input;
+package server.interfaces;
 
-import server.input.command.Command;
+import server.interfaces.commands.Command;
 
 import java.util.LinkedList;
 import java.util.Queue;

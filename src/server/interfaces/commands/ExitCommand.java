@@ -1,6 +1,6 @@
-package server.input.command;
+package server.interfaces.commands;
 
-import server.Controller;
+import server.core.Controller;
 
 import java.util.logging.Logger;
 

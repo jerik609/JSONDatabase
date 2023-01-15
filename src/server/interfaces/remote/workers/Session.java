@@ -1,7 +1,7 @@
-package server.core.workers;
+package server.interfaces.remote.workers;
 
-import server.core.data.Exchange;
-import server.core.data.Request;
+import server.interfaces.Exchange;
+import server.interfaces.remote.data.Request;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

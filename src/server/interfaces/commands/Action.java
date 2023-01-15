@@ -1,4 +1,4 @@
-package server.input.command;
+package server.interfaces.commands;
 
 public enum Action {
     UNKNOWN("unknown"),

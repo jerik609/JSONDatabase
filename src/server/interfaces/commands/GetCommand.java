@@ -1,4 +1,4 @@
-package server.input.command;
+package server.interfaces.commands;
 
 import server.database.Database;
 import server.database.ResponseCode;

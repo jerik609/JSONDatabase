@@ -1,7 +1,7 @@
-package server.core.workers;
+package server.interfaces.remote.workers;
 
-import server.core.data.Exchange;
-import server.core.data.Response;
+import server.interfaces.Exchange;
+import server.interfaces.remote.data.Response;
 
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;

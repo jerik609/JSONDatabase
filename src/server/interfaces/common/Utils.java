@@ -1,4 +1,4 @@
-package server.input.common;
+package server.interfaces.common;
 
 import java.util.regex.Pattern;
 
