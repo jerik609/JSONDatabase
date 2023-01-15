@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 class Session implements Runnable {
     private static final Logger log = Logger.getLogger(Session.class.getSimpleName());
 
-    private static final int SOCKET_IO_TIMEOUT_MS = 5000;
+    private static final int SOCKET_IO_TIMEOUT_MS = 100;
 
     private final String sessionId = UUID.randomUUID().toString();
 
@@ -65,20 +65,19 @@ class Session implements Runnable {
                             throw new RuntimeException("Failed to send response to client.");
                         }
                     });
-                    // process request
-                    if (inputStream.available() > 0) {
+                    //if (inputStream.available() > 0) {
                         final var input = inputStream.readUTF();
                         log.fine("[" + sessionId + "]: Input: " + input);
                         final var request = new Request(sessionId, input);
                         exchange.pushRequest(request);
-                    }
+                    //}
                 } catch (SocketTimeoutException e) {
                     log.finest("[" + sessionId + "]: Socket timeout: just evaluate stop and continue loop");
                 }
-            } while (exchange.hasPendingResponses(sessionId) || (!stop.get() && !socket.isClosed()));
+            } while (exchange.hasPendingResponses(sessionId) || !stop.get());
             log.fine("[" + sessionId + "]: Stopped.");
         } catch (IOException e) {
-            log.warning("[" + sessionId + "]: Terminated due to " + e);
+            log.fine("[" + sessionId + "]: Terminated due to " + e);
         } finally {
             exchange.cleanUp(sessionId);
         }

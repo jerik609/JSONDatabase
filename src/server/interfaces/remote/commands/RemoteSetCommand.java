@@ -10,7 +10,7 @@ import server.interfaces.remote.data.Response;
 import java.util.logging.Logger;
 
 public class RemoteSetCommand implements Command {
-    private static final Logger log = Logger.getLogger(RemoteGetCommand.class.getSimpleName());
+    private static final Logger log = Logger.getLogger(RemoteSetCommand.class.getSimpleName());
 
     private final Database<String> database;
     private final Exchange exchange;

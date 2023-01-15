@@ -71,7 +71,8 @@ public class SocketServer implements Runnable {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.severe("Unexpected exception when executing command: " + e);
+            e.printStackTrace();
         }
 
         log.fine("Stopped.");

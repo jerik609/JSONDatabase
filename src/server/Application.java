@@ -38,7 +38,7 @@ public class Application {
             }
         };
         var rootLogger = LogManager.getLogManager().getLogger("");
-        rootLogger.setLevel(Level.FINEST);
+        rootLogger.setLevel(Level.FINEST); // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         for (Handler handler : rootLogger.getHandlers()) {
             handler.setLevel(Level.FINEST);
             handler.setFormatter(formatter);
