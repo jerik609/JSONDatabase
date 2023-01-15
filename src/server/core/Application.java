@@ -36,7 +36,7 @@ public class Application {
             }
         };
         var rootLogger = LogManager.getLogManager().getLogger("");
-        rootLogger.setLevel(Level.FINEST);
+        rootLogger.setLevel(Level.INFO);
         for (Handler handler : rootLogger.getHandlers()) {
             handler.setLevel(Level.FINEST);
             handler.setFormatter(formatter);
@@ -45,6 +45,8 @@ public class Application {
     }
 
     public void start() {
+        System.out.println("Server started!");
+
         setLogging();
 
         log.fine("---=== Starting JSON Database Application ===---");

@@ -1,5 +1,8 @@
 package client;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -10,9 +13,15 @@ public class Client {
     private static final Pattern pattern = Pattern.compile("(# \\d+)");
     private static final String SERVER_ADDRESS = "127.0.0.1";
     private static final int SERVER_PORT = 34567;
-    private static final int RECORD_NO = 12;
 
     private final Scanner scanner = new Scanner(System.in);
+
+    @Parameter(names={"--type", "-t"})
+    int type;
+    @Parameter(names={"--index", "-i"})
+    int index;
+    @Parameter(names={"--message", "-m"})
+    int message;
 
     private static int getRecordNoFromResponse(String response) {
         final var matcher = pattern.matcher(response);
@@ -23,7 +32,7 @@ public class Client {
         throw new RuntimeException("Invalid response: " + response);
     }
 
-    public void start() {
+    public void run(boolean withParams) {
         try (
                 final var socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
                 final var inputStream = new DataInputStream(socket.getInputStream());
@@ -31,18 +40,30 @@ public class Client {
         )
         {
             System.out.println("Client started!");
-            String input;
-            do {
-                System.out.println("Provide input:");
-                input = scanner.nextLine();
-                //input = "Give me a record # " + RECORD_NO;
-                //input = "Give me a record # " + RECORD_NO;
-                outputStream.writeUTF(input);
-                System.out.println("Sent: " + input);
-                final var responseRecord = inputStream.readUTF(); //getRecordNoFromResponse(inputStream.readUTF());
-                System.out.println("Response: " + responseRecord);
-                //System.out.println("Received: A record # " + responseRecord + " was sent!");
-            } while (!input.equals("DONE"));
+
+            if (withParams) {
+                final var command = type + " " + index + " " + message;
+                System.out.println("Sent: " + command);
+                outputStream.writeUTF(command);
+
+                // receive response
+                var response = inputStream.readUTF();
+                System.out.println("Received: " + response);
+            } else {
+
+                String input;
+                do {
+                    System.out.println("Provide input:");
+                    input = scanner.nextLine();
+
+                    System.out.println("Sent: " + input);
+                    outputStream.writeUTF(input);
+
+                    final var responseRecord = inputStream.readUTF(); //getRecordNoFromResponse(inputStream.readUTF());
+                    System.out.println("Response: " + responseRecord);
+                } while (!input.equals("DONE"));
+            }
+
         } catch (UnknownHostException e) {
             throw new RuntimeException("Unknown host: " + SERVER_ADDRESS + ":" + SERVER_PORT);
         } catch (IOException e) {
@@ -51,8 +72,12 @@ public class Client {
         //System.out.println("Finished!");
     }
 
-    public static void main(String[] args) {
+    public static void main2(String[] args) {
         var client = new Client();
-        client.start();
+        JCommander.newBuilder()
+                .addObject(client)
+                .build()
+                .parse(args);
+        client.run(false);
     }
 }

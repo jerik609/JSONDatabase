@@ -25,7 +25,7 @@ public class Console {
 
     public void start() {
         log.fine("Started.");
-        System.out.println("Enter command:");
+        //System.out.println("Enter command:");
         do {
             final var input = scanner.nextLine();
             String[] commandArray = Utils.splitOffFirst(input, ' ');
