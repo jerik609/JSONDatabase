@@ -1,5 +1,7 @@
 package server.interfaces.local.commands;
 
+import server.interfaces.Command;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 

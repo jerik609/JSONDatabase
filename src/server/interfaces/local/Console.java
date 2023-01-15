@@ -11,16 +11,16 @@ import java.util.logging.Logger;
 public class Console {
     private static final Logger log = Logger.getLogger(Console.class.getSimpleName());
 
+    private final AtomicBoolean stop;
     private final Scanner scanner;
     private final LocalCommandFactory localCommandFactory;
     private final Executor executor;
-    private final AtomicBoolean stop;
 
-    public Console(Scanner scanner, LocalCommandFactory localCommandFactory, Executor executor, AtomicBoolean stop) {
+    public Console(AtomicBoolean stop, Scanner scanner, LocalCommandFactory localCommandFactory, Executor executor) {
+        this.stop = stop;
         this.scanner = scanner;
         this.localCommandFactory = localCommandFactory;
         this.executor = executor;
-        this.stop = stop;
     }
 
     public void start() {

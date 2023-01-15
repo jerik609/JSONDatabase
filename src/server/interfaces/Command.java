@@ -1,4 +1,4 @@
-package server.interfaces.local.commands;
+package server.interfaces;
 
 public interface Command {
     void execute();

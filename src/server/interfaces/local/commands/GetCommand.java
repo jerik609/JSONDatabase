@@ -2,6 +2,7 @@ package server.interfaces.local.commands;
 
 import server.database.Database;
 import server.database.ResponseCode;
+import server.interfaces.Command;
 
 public class GetCommand implements Command {
     private final Database<String> database;

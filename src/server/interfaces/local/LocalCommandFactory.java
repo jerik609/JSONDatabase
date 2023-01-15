@@ -1,6 +1,7 @@
 package server.interfaces.local;
 
 import server.database.Database;
+import server.interfaces.Command;
 import server.interfaces.common.Action;
 import server.interfaces.local.commands.*;
 
@@ -17,11 +18,11 @@ public class LocalCommandFactory {
 
     public Command getCommandFromAction(Action action, String commandParams) {
         return switch (action) {
-            case UNKNOWN -> new UnknownCommand();
             case SET -> new SetCommand(database, commandParams);
             case GET -> new GetCommand(database, commandParams);
             case DELETE -> new DeleteCommand(database, commandParams);
             case EXIT -> new ExitCommand(stop);
+            default -> new UnknownCommand();
         };
     }
 }

@@ -4,6 +4,7 @@ import server.interfaces.Exchange;
 import server.interfaces.local.Console;
 import server.interfaces.local.LocalCommandFactory;
 import server.interfaces.remote.DataWorker;
+import server.interfaces.remote.RemoteCommandFactory;
 import server.interfaces.remote.SocketServer;
 import server.database.Database;
 import server.interfaces.Executor;
@@ -56,12 +57,13 @@ public class Application {
 
         // local context
         final var localCommandFactory = new LocalCommandFactory(stopFlag, database);
-        final var console = new Console(scanner, localCommandFactory, executor, stopFlag);
+        final var console = new Console(stopFlag, scanner, localCommandFactory, executor);
 
         // remote context
         final var pool = new ForkJoinPool(4);
         final var exchange = new Exchange();
-        final var dataWorker = new DataWorker(stopFlag, pool, exchange);
+        final var remoteCommandFactory = new RemoteCommandFactory(stopFlag, database, exchange);
+        final var dataWorker = new DataWorker(stopFlag, pool, exchange, remoteCommandFactory);
         final var socketServer = new SocketServer(stopFlag, pool, exchange);
 
         // start the application

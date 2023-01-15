@@ -19,11 +19,13 @@ public class DataWorker implements Runnable {
     private final AtomicBoolean stop;
     private final ForkJoinPool pool;
     private final Exchange exchange;
+    private final RemoteCommandFactory remoteCommandFactory;
 
-    public DataWorker(AtomicBoolean stop, ForkJoinPool pool, Exchange exchange) {
-        this.exchange = exchange;
-        this.pool = pool;
+    public DataWorker(AtomicBoolean stop, ForkJoinPool pool, Exchange exchange, RemoteCommandFactory remoteCommandFactory) {
         this.stop = stop;
+        this.pool = pool;
+        this.exchange = exchange;
+        this.remoteCommandFactory = remoteCommandFactory;
     }
 
     public void start() {
