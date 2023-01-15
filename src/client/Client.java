@@ -1,6 +1,5 @@
 package client;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 import java.io.*;
@@ -17,11 +16,11 @@ public class Client {
     private final Scanner scanner = new Scanner(System.in);
 
     @Parameter(names={"--type", "-t"})
-    String type; // = "exit";
+    String type;
     @Parameter(names={"--index", "-i"})
-    int index; // = 0;
+    int index;
     @Parameter(names={"--message", "-m"})
-    String message; // = "null";
+    String message;
 
     private static int getRecordNoFromResponse(String response) {
         final var matcher = pattern.matcher(response);
@@ -33,6 +32,7 @@ public class Client {
     }
 
     public void run(boolean withParams) {
+
         try (
                 final var socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
                 final var inputStream = new DataInputStream(socket.getInputStream());
@@ -44,7 +44,9 @@ public class Client {
             if (withParams) {
                 var command = type;
                 command += index != 0 ? " " + index : "";
-                command += message != null ? " " + message : "";
+                if (message != null && !message.equals("null")) {
+                    command += " " + message;
+                }
                 System.out.println("Sent: " + command);
                 outputStream.writeUTF(command);
 
@@ -72,14 +74,5 @@ public class Client {
             //throw new RuntimeException("Client failed.");
         }
         //System.out.println("Finished!");
-    }
-
-    public static void main2(String[] args) {
-        var client = new Client();
-        JCommander.newBuilder()
-                .addObject(client)
-                .build()
-                .parse(args);
-        client.run(true);
     }
 }
