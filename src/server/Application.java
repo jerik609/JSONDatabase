@@ -7,24 +7,43 @@ import server.database.Database;
 import server.input.Controller;
 import server.input.Executor;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class Application {
     private static final Logger log = Logger.getLogger(Application.class.getSimpleName());
-    public void start() {
-        // set logging, due to structure of the academy project, we do it in the code
+
+    private static final String DATE_TIME_PATTERN_FORMAT = "dd.MM.yyyy-HH:mm:ss";
+
+    // set logging, due to structure of the academy project, we do it in the code and not via configuration file
+    public static void setLogging() {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN_FORMAT)
+                .withZone(ZoneId.systemDefault());
+        var formatter = new Formatter() {
+            @Override
+            public String format(LogRecord logRecord) {
+                return "{" + timeFormatter.format(logRecord.getInstant()) + "} - "
+                        + "[" + logRecord.getLevel() + "] - "
+                        + "(" + logRecord.getLoggerName() + "," + logRecord.getLongThreadID() + ") - "
+                        + logRecord.getMessage() + "\n";
+            }
+        };
         var rootLogger = LogManager.getLogManager().getLogger("");
         rootLogger.setLevel(Level.FINEST);
         for (Handler handler : rootLogger.getHandlers()) {
             handler.setLevel(Level.FINEST);
-            log.fine("Setting log level for handler: " + handler);
+            handler.setFormatter(formatter);
+            log.fine("Setting log level and formatter for handler: " + handler);
         }
+    }
+
+    public void start() {
+        setLogging();
 
         final var scanner = new Scanner(System.in);
         final var executor = new Executor();
@@ -41,7 +60,6 @@ public class Application {
 //        final var server = new Server();
 //        server.start();
 
-
         final var pool = new ForkJoinPool(4);
         final var exchange = new Exchange();
 
@@ -49,7 +67,16 @@ public class Application {
         final var socketServer = new SocketServer(stopFlag, pool, exchange);
 
         dataWorker.start();
-        socketServer.start();
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        dataWorker.stop();
+
+        //socketServer.start();
 
         controller.start();
     }

@@ -31,7 +31,7 @@ public class DataWorker implements Runnable {
             log.fine("Starting.");
             pool.submit(this);
         } else {
-            log.fine("Cannot start - already running.");
+            log.fine("Cannot start.");
         }
     }
 
@@ -40,7 +40,7 @@ public class DataWorker implements Runnable {
             log.fine("Stopping.");
             isRunning.getAndSet(false);
         } else {
-            log.fine("Cannot stop - already stopped.");
+            log.fine("Cannot stop.");
         }
     }
 
