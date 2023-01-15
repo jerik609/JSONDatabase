@@ -1,6 +1,6 @@
 package server.interfaces;
 
-import server.interfaces.commands.Command;
+import server.interfaces.local.commands.Command;
 
 import java.util.LinkedList;
 import java.util.Queue;

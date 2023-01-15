@@ -1,4 +1,4 @@
-package server.interfaces.commands;
+package server.interfaces.local.commands;
 
 public class UnknownCommand implements Command {
     @Override

@@ -1,4 +1,4 @@
-package server.interfaces.remote.workers;
+package server.interfaces.remote;
 
 import server.interfaces.Exchange;
 import server.interfaces.remote.data.Response;

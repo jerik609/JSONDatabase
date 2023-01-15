@@ -1,8 +1,10 @@
 package server.core;
 
 import server.interfaces.Exchange;
-import server.interfaces.remote.workers.DataWorker;
-import server.interfaces.remote.workers.SocketServer;
+import server.interfaces.local.Console;
+import server.interfaces.local.LocalCommandFactory;
+import server.interfaces.remote.DataWorker;
+import server.interfaces.remote.SocketServer;
 import server.database.Database;
 import server.interfaces.Executor;
 
@@ -44,33 +46,31 @@ public class Application {
     public void start() {
         setLogging();
 
+        log.fine("---=== Starting JSON Database Application ===---");
+
+        final var stopFlag = new AtomicBoolean(false);
+
         final var scanner = new Scanner(System.in);
         final var executor = new Executor();
         final var database = new Database<>(1000, "");
 
-        final var stopFlag = new AtomicBoolean(false);
+        // local context
+        final var localCommandFactory = new LocalCommandFactory(stopFlag, database);
+        final var console = new Console(scanner, localCommandFactory, executor, stopFlag);
 
-        final var controller = new Controller(scanner, executor, database);
-
-        // messaging layer
-
+        // remote context
         final var pool = new ForkJoinPool(4);
         final var exchange = new Exchange();
-
         final var dataWorker = new DataWorker(stopFlag, pool, exchange);
         final var socketServer = new SocketServer(stopFlag, pool, exchange);
 
+        // start the application
         dataWorker.start();
         socketServer.start();
 
-        controller.start();
+        console.start();
 
-//        socketServer.stop();
-//        dataWorker.stop();
-
-        //TODO: this shutdown is a bit dirty, we'll clean up later
-        stopFlag.getAndSet(true);
-
+        // sync thread pool shutdown
         pool.shutdown();
         try {
             if (!pool.awaitTermination(30, TimeUnit.SECONDS)) {
@@ -79,5 +79,7 @@ public class Application {
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while trying to stop the thread pool");
         }
+
+        log.fine("Application terminated gracefully.");
     }
 }

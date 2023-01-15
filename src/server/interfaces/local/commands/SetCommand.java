@@ -1,4 +1,4 @@
-package server.interfaces.commands;
+package server.interfaces.local.commands;
 
 import server.database.Database;
 import server.database.ResponseCode;

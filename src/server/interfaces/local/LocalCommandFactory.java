@@ -1,14 +1,17 @@
-package server.interfaces.commands;
+package server.interfaces.local;
 
 import server.database.Database;
-import server.core.Controller;
+import server.interfaces.common.Action;
+import server.interfaces.local.commands.*;
 
-public class CommandFactory {
-    private final Controller controller;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+public class LocalCommandFactory {
+    private final AtomicBoolean stop;
     private final Database<String> database;
 
-    public CommandFactory(Controller controller, Database<String> database) {
-        this.controller = controller;
+    public LocalCommandFactory(AtomicBoolean stop, Database<String> database) {
+        this.stop = stop;
         this.database = database;
     }
 
@@ -18,7 +21,7 @@ public class CommandFactory {
             case SET -> new SetCommand(database, commandParams);
             case GET -> new GetCommand(database, commandParams);
             case DELETE -> new DeleteCommand(database, commandParams);
-            case EXIT -> new ExitCommand(controller);
+            case EXIT -> new ExitCommand(stop);
         };
     }
 }
