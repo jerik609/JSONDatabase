@@ -6,7 +6,11 @@ import server.interfaces.Command;
 import server.interfaces.Exchange;
 import server.interfaces.remote.data.Response;
 
+import java.util.logging.Logger;
+
 public class RemoteGetCommand implements Command {
+    private static final Logger log = Logger.getLogger(RemoteGetCommand.class.getSimpleName());
+
     private final Database<String> database;
     private final Exchange exchange;
     private final String sessionId;
@@ -31,5 +35,6 @@ public class RemoteGetCommand implements Command {
         } else {
             exchange.pushResponse(new Response(sessionId, "Failed to get data for: " + commandParams));
         }
+        log.info("Pushed response for result: " + result);
     }
 }

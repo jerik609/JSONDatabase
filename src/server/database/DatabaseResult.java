@@ -19,6 +19,14 @@ public class DatabaseResult<T> {
         return responseCode;
     }
 
+    @Override
+    public String toString() {
+        return "Database result: " +
+                (responseCode == null ? "null" : responseCode) +
+                " : " +
+                (data == null ? "null" : data.toString());
+    }
+
     public static class Builder<T> {
         private ResponseCode responseCode;
         private T data = null;

@@ -20,7 +20,7 @@ import java.util.logging.*;
 public class Application {
     private static final Logger log = Logger.getLogger(Application.class.getSimpleName());
 
-    private static final String DATE_TIME_PATTERN_FORMAT = "dd.MM.yyyy-HH:mm:ss";
+    private static final String DATE_TIME_PATTERN_FORMAT = "dd.MM.yyyy-HH:mm:ss.SSS";
 
     // set logging, due to structure of the academy project, we do it in the code and not via configuration file
     public static void setLogging() {

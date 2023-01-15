@@ -60,6 +60,7 @@ public class DataWorker implements Runnable {
         while (!stop.get() && isRunning.get()) {
             exchange.takeRequest().ifPresent(
                 request -> {
+                    log.fine("Working on request: " + request);
                     String[] commandArray = Utils.splitOffFirst(request.payload(), ' ');
                     executor.acceptCommand(remoteCommandFactory.getRemoteCommandFromRequest(
                             request.sessionId(),

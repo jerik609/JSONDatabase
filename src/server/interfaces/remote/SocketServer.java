@@ -67,7 +67,7 @@ public class SocketServer implements Runnable {
                     log.fine("New client established connection.");
                     pool.submit(new Session(stop, socket, exchange));
                 } catch (SocketTimeoutException e) {
-                    log.finest("Server socket timeout, just evaluate stop and continue loop");
+                    //log.finest("Server socket timeout, just evaluate stop and continue loop");
                 }
             }
         } catch (IOException e) {

@@ -59,17 +59,21 @@ class Session implements Runnable {
                     // process response, if any
                     exchange.takeResponse(sessionId).ifPresent(response -> {
                         try {
+                            log.fine("[" + sessionId + "]: Response to send: " + response.payload());
                             outputStream.writeUTF(response.payload());
                         } catch (IOException e) {
                             throw new RuntimeException("Failed to send response to client.");
                         }
                     });
                     // process request
-                    final var input = inputStream.readUTF();
-                    final var request = new Request(sessionId, input);
-                    exchange.pushRequest(request);
+                    if (inputStream.available() > 0) {
+                        final var input = inputStream.readUTF();
+                        log.fine("[" + sessionId + "]: Input: " + input);
+                        final var request = new Request(sessionId, input);
+                        exchange.pushRequest(request);
+                    }
                 } catch (SocketTimeoutException e) {
-                    log.fine("[" + sessionId + "]: Socket timeout: just evaluate stop and continue loop");
+                    log.finest("[" + sessionId + "]: Socket timeout: just evaluate stop and continue loop");
                 }
             } while (!stop.get() && !socket.isClosed());
             log.fine("[" + sessionId + "]: Stopped.");
