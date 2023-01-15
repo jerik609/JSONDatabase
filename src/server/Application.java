@@ -1,4 +1,4 @@
-package server.core;
+package server;
 
 import server.interfaces.Exchange;
 import server.interfaces.local.Console;

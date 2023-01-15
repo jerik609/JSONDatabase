@@ -17,11 +17,11 @@ public class Client {
     private final Scanner scanner = new Scanner(System.in);
 
     @Parameter(names={"--type", "-t"})
-    int type;
+    String type; // = "exit";
     @Parameter(names={"--index", "-i"})
-    int index;
+    int index; // = 0;
     @Parameter(names={"--message", "-m"})
-    int message;
+    String message; // = "null";
 
     private static int getRecordNoFromResponse(String response) {
         final var matcher = pattern.matcher(response);
@@ -67,17 +67,17 @@ public class Client {
         } catch (UnknownHostException e) {
             throw new RuntimeException("Unknown host: " + SERVER_ADDRESS + ":" + SERVER_PORT);
         } catch (IOException e) {
-            throw new RuntimeException("Client failed.");
+            //throw new RuntimeException("Client failed.");
         }
         //System.out.println("Finished!");
     }
 
-    public static void main2(String[] args) {
+    public static void main(String[] args) {
         var client = new Client();
         JCommander.newBuilder()
                 .addObject(client)
                 .build()
                 .parse(args);
-        client.run(false);
+        client.run(true);
     }
 }
