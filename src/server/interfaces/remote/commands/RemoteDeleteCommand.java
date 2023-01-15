@@ -24,9 +24,11 @@ public class RemoteDeleteCommand implements Command {
         final var index = Integer.parseInt(commandParams);
         final var result = database.delete(index);
         if (result.getResponseCode() == ResponseCode.OK) {
-            exchange.pushResponse(new Response(sessionId, "Successfully deleted data for: " + commandParams));
+            //exchange.pushResponse(new Response(sessionId, "Successfully deleted data for: " + commandParams));
+            exchange.pushResponse(new Response(sessionId, "OK"));
         } else {
-            exchange.pushResponse(new Response(sessionId, "Failed to delete data for: " + commandParams));
+            //exchange.pushResponse(new Response(sessionId, "Failed to delete data for: " + commandParams));
+            exchange.pushResponse(new Response(sessionId, "ERROR"));
         }
     }
 }

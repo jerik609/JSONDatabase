@@ -28,12 +28,15 @@ public class RemoteGetCommand implements Command {
         final var index = Integer.parseInt(commandParams);
         final var result = database.get(index);
         if (result.getResponseCode() == ResponseCode.OK) {
-            exchange.pushResponse(new Response(
-                            sessionId,
-                            "The data: " + result.getData().orElseThrow(
-                                    () -> new RuntimeException("empty result despite success!?"))));
+//            exchange.pushResponse(
+//                    new Response(sessionId, "The data: " + result.getData()
+//                            .orElseThrow(() -> new RuntimeException("empty result despite success!?"))));
+            exchange.pushResponse(
+                    new Response(sessionId, result.getData()
+                            .orElseThrow(() -> new RuntimeException("empty result despite success!?"))));
         } else {
-            exchange.pushResponse(new Response(sessionId, "Failed to get data for: " + commandParams));
+            //exchange.pushResponse(new Response(sessionId, "Failed to get data for: " + commandParams));
+            exchange.pushResponse(new Response(sessionId, "ERROR"));
         }
         log.info("Pushed response for result: " + result);
     }

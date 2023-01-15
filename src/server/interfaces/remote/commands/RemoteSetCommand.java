@@ -26,9 +26,11 @@ public class RemoteSetCommand implements Command {
         final var index = Integer.parseInt(params[0]);
         final var result = database.set(index, params[1]);
         if (result.getResponseCode() == ResponseCode.OK) {
-            exchange.pushResponse(new Response(sessionId, "Successfully set record: " + commandParams));
+            //exchange.pushResponse(new Response(sessionId, "Successfully set record: " + commandParams));
+            exchange.pushResponse(new Response(sessionId, "OK"));
         } else {
-            exchange.pushResponse(new Response(sessionId, "Failed to set record: " + commandParams));
+            //exchange.pushResponse(new Response(sessionId, "Failed to set record: " + commandParams));
+            exchange.pushResponse(new Response(sessionId, "ERROR"));
         }
     }
 }

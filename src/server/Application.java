@@ -17,6 +17,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.*;
 
+import static java.lang.Thread.sleep;
+
 public class Application {
     private static final Logger log = Logger.getLogger(Application.class.getSimpleName());
 
@@ -36,7 +38,7 @@ public class Application {
             }
         };
         var rootLogger = LogManager.getLogManager().getLogger("");
-        rootLogger.setLevel(Level.INFO);
+        rootLogger.setLevel(Level.FINEST);
         for (Handler handler : rootLogger.getHandlers()) {
             handler.setLevel(Level.FINEST);
             handler.setFormatter(formatter);
@@ -72,7 +74,15 @@ public class Application {
         dataWorker.start();
         socketServer.start();
 
-        console.start();
+        //console.start();
+
+        while (!stopFlag.get()) {
+            try {
+                sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         // sync thread pool shutdown
         pool.shutdown();
