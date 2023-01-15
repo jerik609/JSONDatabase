@@ -19,7 +19,7 @@ public class RemoteExitCommand implements Command {
 
     @Override
     public void execute() {
+        exchange.pushResponse(new Response(sessionId, "OK"));
         stop.getAndSet(true);
-        exchange.pushResponse(new Response(sessionId, "Stop command issued."));
     }
 }

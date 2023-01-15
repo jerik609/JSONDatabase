@@ -76,6 +76,13 @@ public class Exchange {
         }
     }
 
+    public boolean hasResponses(String sessionId) {
+        if (!responseMap.containsKey(sessionId)) {
+            return false;
+        }
+        return !responseMap.get(sessionId).isEmpty();
+    }
+
     /**
      * Cleanup all data associated with the provided session ID.
      * @param sessionId

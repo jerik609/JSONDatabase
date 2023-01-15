@@ -75,7 +75,7 @@ class Session implements Runnable {
                 } catch (SocketTimeoutException e) {
                     log.finest("[" + sessionId + "]: Socket timeout: just evaluate stop and continue loop");
                 }
-            } while (!stop.get() && !socket.isClosed());
+            } while ((!stop.get() && !socket.isClosed()) || exchange.hasResponses(sessionId));
             log.fine("[" + sessionId + "]: Stopped.");
         } catch (IOException e) {
             log.warning("[" + sessionId + "]: Terminated due to " + e);
