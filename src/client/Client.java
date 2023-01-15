@@ -49,7 +49,7 @@ public class Client {
         //System.out.println("Finished!");
     }
 
-    public static void main2(String[] args) {
+    public static void main(String[] args) {
         var client = new Client();
         client.start();
     }

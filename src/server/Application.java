@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.*;
 
@@ -67,17 +68,23 @@ public class Application {
         final var socketServer = new SocketServer(stopFlag, pool, exchange);
 
         dataWorker.start();
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        dataWorker.stop();
-
-        //socketServer.start();
+        socketServer.start();
 
         controller.start();
+
+//        socketServer.stop();
+//        dataWorker.stop();
+
+        //TODO: this shutdown is a bit dirty, we'll clean up later
+        stopFlag.getAndSet(true);
+
+        pool.shutdown();
+        try {
+            if (!pool.awaitTermination(30, TimeUnit.SECONDS)) {
+                throw new RuntimeException("Thread pool failed to stop gracefully");
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Interrupted while trying to stop the thread pool");
+        }
     }
 }

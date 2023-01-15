@@ -8,12 +8,15 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Logger;
 
 /**
  * Just a placeholder for communication "queues".
  * Can be called from multiple threads.
  */
 public class Exchange {
+    private static final Logger log = Logger.getLogger(Exchange.class.getSimpleName());
+
     /* FIFO queue for client requests */
     private final ConcurrentLinkedQueue<Request> requestQueue = new ConcurrentLinkedQueue<>();
     /* Map of FIFO queues for client responses, mapping by sessionId */
@@ -71,5 +74,15 @@ public class Exchange {
         } catch (NoSuchElementException e) {
             return Optional.empty();
         }
+    }
+
+    /**
+     * Cleanup all data associated with the provided session ID.
+     * @param sessionId
+     */
+    public void cleanUp(String sessionId) {
+        log.fine("Removing all data for session: " + sessionId);
+        requestQueue.removeIf(request -> request.sessionId().equals(sessionId));
+        responseMap.remove(sessionId);
     }
 }

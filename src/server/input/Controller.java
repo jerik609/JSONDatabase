@@ -29,6 +29,7 @@ public class Controller {
                     commandArray[1]));
             executor.run();
         } while (!stop);
+        System.out.println("controlled has stopped");
     }
 
     public void stop() {

@@ -52,9 +52,8 @@ class Session implements Runnable {
                 socket;
                 final var inputStream = new DataInputStream(socket.getInputStream());
                 final var outputStream = new DataOutputStream(socket.getOutputStream());
-        )
-        {
-            log.fine("[" + sessionId + "]: Session started.");
+        ) {
+            log.fine("[" + sessionId + "]: Started.");
             do {
                 try {
                     // process response, if any
@@ -73,9 +72,11 @@ class Session implements Runnable {
                     log.fine("[" + sessionId + "]: Socket timeout: just evaluate stop and continue loop");
                 }
             } while (!stop.get() && !socket.isClosed());
-            log.fine("[" + sessionId + "]: Session stopped.");
+            log.fine("[" + sessionId + "]: Stopped.");
         } catch (IOException e) {
-            throw new RuntimeException("[" + sessionId + "]: Failed due to " + e.getMessage());
+            log.warning("[" + sessionId + "]: Terminated due to " + e);
+        } finally {
+            exchange.cleanUp(sessionId);
         }
     }
 }

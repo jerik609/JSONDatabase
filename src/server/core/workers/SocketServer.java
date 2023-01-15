@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
@@ -20,7 +19,7 @@ public class SocketServer implements Runnable {
     private static final Logger log = Logger.getLogger(SocketServer.class.getSimpleName());
 
     private static final int LISTENER_PORT = 34567;
-    private static final int SERVER_SOCKET_TIMEOUT_MS = 10000;
+    private static final int SERVER_SOCKET_TIMEOUT_MS = 5000;
 
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
@@ -38,57 +37,43 @@ public class SocketServer implements Runnable {
         if (!stop.get() && !isRunning.get()) {
             log.fine("Starting.");
             pool.submit(this);
-            log.fine("Started.");
         } else {
             log.fine("Cannot start.");
         }
     }
 
+    public void stop() {
+        if (isRunning.get()) {
+            log.fine("Stopping.");
+            isRunning.getAndSet(false);
+        } else {
+            log.fine("Cannot stop.");
+        }
+    }
+
     @Override
     public void run() {
+        log.fine("Started.");
+
+        isRunning.getAndSet(true);
+
         try (
                 final var serverSocket = new ServerSocket(LISTENER_PORT);
-        )
-        {
-            log.fine("[Server]: Starting listening for client connections.");
-            System.out.println("Server started!");
+        ) {
             serverSocket.setSoTimeout(SERVER_SOCKET_TIMEOUT_MS);
-            do {
+            while (!stop.get() && isRunning.get()) {
                 try {
                     final var socket = serverSocket.accept();
-                    log.fine("[Server]: New client established connection.");
+                    log.fine("New client established connection.");
                     pool.submit(new Session(stop, socket, exchange));
                 } catch (SocketTimeoutException e) {
-                    log.finest("[Server]: Server socket timeout, just evaluate stop and continue loop");
+                    log.finest("Server socket timeout, just evaluate stop and continue loop");
                 }
-            } while (!stop.get());
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        log.fine("[Server]: Finished processing.");
-    }
 
-    //TODO: this will not work!
-    @Deprecated
-    public void stop() {
-        if (isRunning.get()) {
-            log.fine("[Server]: Server not running or already shutting down, nothing to be done.");
-        } else {
-            log.fine("[Server]: Stopping the server gracefully.");
-            // perform shutdown - signal threads and wait for completion
-            stop.getAndSet(true);
-            pool.shutdown();
-            try {
-                if (!pool.awaitTermination(10, TimeUnit.SECONDS)) {
-                    throw new RuntimeException("Thread pool failed to stop gracefully");
-                }
-            } catch (InterruptedException e) {
-                throw new RuntimeException("Interrupted while trying to stop the thread pool");
-            }
-            // ensure consistent state in case we'd like to start the server again
-            stop.getAndSet(false);
-            isRunning.getAndSet(false);
-            log.fine("[Server]: Server stopped gracefully.");
-        }
+        log.fine("Stopped.");
     }
 }

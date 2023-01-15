@@ -47,7 +47,9 @@ public class DataWorker implements Runnable {
     @Override
     public void run() {
         log.fine("Started.");
+
         isRunning.getAndSet(true);
+
         while (!stop.get() && isRunning.get()) {
             exchange.takeRequest().ifPresent(
                     //TODO: call the command processor here:
@@ -56,6 +58,7 @@ public class DataWorker implements Runnable {
                     request -> exchange.pushResponse(new Response(request.sessionId(), "ECHO: " + request.payload()))
             );
         }
+
         log.fine("Stopped.");
     }
 }
