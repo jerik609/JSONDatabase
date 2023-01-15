@@ -38,7 +38,7 @@ public class Application {
             }
         };
         var rootLogger = LogManager.getLogManager().getLogger("");
-        rootLogger.setLevel(Level.FINEST); // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        rootLogger.setLevel(Level.INFO); // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         for (Handler handler : rootLogger.getHandlers()) {
             handler.setLevel(Level.FINEST);
             handler.setFormatter(formatter);
@@ -64,7 +64,7 @@ public class Application {
         final var console = new Console(stopFlag, scanner, localCommandFactory, executor);
 
         // remote context
-        final var pool = new ForkJoinPool(4);
+        final var pool = ForkJoinPool.commonPool(); //new ForkJoinPool(8);
         final var exchange = new Exchange();
         final var remoteCommandFactory = new RemoteCommandFactory(stopFlag, database, exchange);
         final var dataWorker = new DataWorker(stopFlag, pool, exchange, remoteCommandFactory, executor);
