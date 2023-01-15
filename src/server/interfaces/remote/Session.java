@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 class Session implements Runnable {
     private static final Logger log = Logger.getLogger(Session.class.getSimpleName());
 
-    private static final int SOCKET_IO_TIMEOUT_MS = 100;
+    private static final int SOCKET_IO_TIMEOUT_MS = 250;
 
     private final String sessionId = UUID.randomUUID().toString();
 

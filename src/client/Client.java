@@ -5,6 +5,7 @@ import com.beust.jcommander.Parameter;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -40,38 +41,46 @@ public class Client {
         )
         {
             System.out.println("Client started!");
+            socket.setSoTimeout(5000);
 
-            if (withParams) {
+//            if (withParams) {
                 var command = type;
                 command += index != 0 ? " " + index : "";
                 if (message != null && !message.equals("null")) {
                     command += " " + message;
                 }
                 System.out.println("Sent: " + command);
+
                 outputStream.writeUTF(command);
+                System.out.println("BRBLI-BRBLI");
 
                 // receive response
+                System.out.println("SMRDLI SMRDLI: " + LocalDateTime.now());
                 var response = inputStream.readUTF();
+                System.out.println("POSTPROC");
                 System.out.println("Received: " + response);
-            } else {
-
-                String input;
-                do {
-                    System.out.println("Provide input:");
-                    input = scanner.nextLine();
-
-                    System.out.println("Sent: " + input);
-                    outputStream.writeUTF(input);
-
-                    final var responseRecord = inputStream.readUTF(); //getRecordNoFromResponse(inputStream.readUTF());
-                    System.out.println("Response: " + responseRecord);
-                } while (!input.equals("DONE"));
-            }
+//            } else {
+//
+//                String input;
+//                do {
+//                    System.out.println("Provide input:");
+//                    input = scanner.nextLine();
+//
+//                    System.out.println("Sent: " + input);
+//                    outputStream.writeUTF(input);
+//
+//                    final var responseRecord = inputStream.readUTF(); //getRecordNoFromResponse(inputStream.readUTF());
+//                    System.out.println("Response: " + responseRecord);
+//                } while (!input.equals("DONE"));
+//            }
 
         } catch (UnknownHostException e) {
             throw new RuntimeException("Unknown host: " + SERVER_ADDRESS + ":" + SERVER_PORT);
         } catch (IOException e) {
-            //throw new RuntimeException("Client failed.");
+            System.out.println("Exception: " + e);
+            e.printStackTrace();
+            throw new RuntimeException("Client failed: " + e);
+
         }
         //System.out.println("Finished!");
     }
