@@ -4,10 +4,8 @@ import server.core.data.Exchange;
 import server.core.workers.DataWorker;
 import server.core.workers.SocketServer;
 import server.database.Database;
-import server.input.Controller;
 import server.input.Executor;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -54,12 +52,7 @@ public class Application {
 
         final var controller = new Controller(scanner, executor, database);
 
-        // we'll wrap this in input and provide as dependency injection, but let's
-        // do this as standalone component for now
-        // even the arch will be a bit retro ... we will use fork join pool
-        // but a reactive pattern would be more suitable
-//        final var server = new Server();
-//        server.start();
+        // messaging layer
 
         final var pool = new ForkJoinPool(4);
         final var exchange = new Exchange();

@@ -1,7 +1,7 @@
 package server.input.command;
 
 import server.database.Database;
-import server.input.Controller;
+import server.Controller;
 
 public class CommandFactory {
     private final Controller controller;

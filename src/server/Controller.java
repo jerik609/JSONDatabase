@@ -1,6 +1,7 @@
-package server.input;
+package server;
 
 import server.database.Database;
+import server.input.Executor;
 import server.input.command.Action;
 import server.input.command.CommandFactory;
 import server.input.common.Utils;

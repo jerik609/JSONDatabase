@@ -52,9 +52,17 @@ public class DataWorker implements Runnable {
 
         while (!stop.get() && isRunning.get()) {
             exchange.takeRequest().ifPresent(
+
+
+
                     //TODO: call the command processor here:
                     // provide the response queue or just the exchange?
                     // command processor will generate the response and put it in the queue
+
+                    //request ->
+
+
+
                     request -> exchange.pushResponse(new Response(request.sessionId(), "ECHO: " + request.payload()))
             );
         }
