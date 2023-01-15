@@ -46,23 +46,18 @@ public class DataSender implements Runnable {
         log.fine("Started.");
         while (!stop.get()) {
             for (final var session : exchange.getSessions()) {
-                try (
-                        final var outputStream = new DataOutputStream(session.getSocket().getOutputStream())
-                ) {
-                    // process response, if any
-                    exchange.takeResponse(session.getSessionId()).ifPresent(response -> {
-                        try {
-                            log.fine("[" + session.getSessionId() + "]: Response to send: " + response.payload());
-                            outputStream.writeUTF(response.payload());
-                        } catch (IOException e) {
-                            //log.warning("Failed to send response to client: " + e);
-                            //e.printStackTrace();
-                        }
-                    });
-                } catch (IOException e) {
-                    //log.warning("Unexpected exception while reading data from session: " + e);
-                    //e.printStackTrace();
-                }
+                final var outputStream = session.getOutputStream();
+                // process response, if any
+                exchange.takeResponse(session.getSessionId()).ifPresent(response -> {
+                    try {
+                        log.fine("[" + session.getSessionId() + "]: Response to send: " + response.payload());
+                        outputStream.writeUTF(response.payload());
+                    } catch (IOException e) {
+                        log.warning("Failed to send response to client: " + e);
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
+                });
             }
         }
         log.fine("Stopped.");

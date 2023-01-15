@@ -57,9 +57,8 @@ public class DataReader implements Runnable {
         log.fine("Started.");
         while (!stop.get()) {
             for (final var session : exchange.getSessions()) {
-                try (
-                        final var inputStream = new DataInputStream(session.getSocket().getInputStream())
-                ) {
+                final var inputStream = session.getInputStream();
+                try {
                     if (inputStream.available() > 0) {
                         final var input = inputStream.readUTF();
                         log.fine("[" + session.getSessionId() + "]: Input: " + input);
@@ -67,7 +66,7 @@ public class DataReader implements Runnable {
                         exchange.pushRequest(request);
                     }
                 } catch (IOException e) {
-                    log.warning("Unexpected exception while reading data from session: " + e);
+                    log.warning("Failed to read from input stream: " + e);
                     e.printStackTrace();
                     throw new RuntimeException(e);
                 }

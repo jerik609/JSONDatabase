@@ -9,6 +9,6 @@ public class Main {
                 .addObject(client)
                 .build()
                 .parse(args);
-        client.run(false);
+        client.run(true);
     }
 }
