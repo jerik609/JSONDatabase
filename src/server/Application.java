@@ -25,7 +25,7 @@ public class Application {
     private static final String DATE_TIME_PATTERN_FORMAT = "dd.MM.yyyy-HH:mm:ss.SSS";
 
     // set logging, due to structure of the academy project, we do it in the code and not via configuration file
-    public static void setLogging() {
+    public static void setLogging(Level logLevel) {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN_FORMAT)
                 .withZone(ZoneId.systemDefault());
         var formatter = new Formatter() {
@@ -37,8 +37,9 @@ public class Application {
                         + logRecord.getMessage() + "\n";
             }
         };
+
         var rootLogger = LogManager.getLogManager().getLogger("");
-        rootLogger.setLevel(Level.INFO); // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        rootLogger.setLevel(logLevel);
         for (Handler handler : rootLogger.getHandlers()) {
             handler.setLevel(Level.FINEST);
             handler.setFormatter(formatter);
@@ -46,10 +47,8 @@ public class Application {
         }
     }
 
-    public void start() {
-        System.out.println("Server started!");
-
-        setLogging();
+    public void start(Level logLevel) {
+        setLogging(logLevel);
 
         log.fine("---=== Starting JSON Database Application ===---");
 
@@ -64,11 +63,13 @@ public class Application {
         final var console = new Console(stopFlag, scanner, localCommandFactory, executor);
 
         // remote context
-        final var pool = ForkJoinPool.commonPool(); //new ForkJoinPool(8);
+        final var pool = ForkJoinPool.commonPool();
         final var exchange = new Exchange();
         final var remoteCommandFactory = new RemoteCommandFactory(stopFlag, database, exchange);
         final var dataWorker = new DataWorker(stopFlag, pool, exchange, remoteCommandFactory, executor);
         final var socketServer = new SocketServer(stopFlag, pool, exchange);
+
+        System.out.println("Server started!");
 
         // start the application
         dataWorker.start();
@@ -84,7 +85,7 @@ public class Application {
                 throw new RuntimeException(e);
             }
         }
-        System.exit(0);
+        //System.exit(0);
 
         // sync thread pool shutdown
         pool.shutdown();
