@@ -11,10 +11,7 @@ import java.util.logging.Logger;
 /**
  * Async.
  * Communicates with the client.
- * In a loop - checks for data to send to client - from the respective response queue.
- * 1. check for requests, enqueue them to request queue
- * 2. check for responses, send them to client
- * We'll be stupid a bit - handle both directions in one session/channel?
+ * Check for requests, enqueue them to request queue.
  */
 //TODO: of course, normally we would protect against backpressure, but normally, we'd not use
 // "raw" approach to implement messaging

@@ -7,6 +7,11 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
+/**
+ * Async.
+ * Communicates with the client.
+ * Check for responses, send them to client.
+ */
 public class DataSender implements Runnable {
     private static final Logger log = Logger.getLogger(DataSender.class.getSimpleName());
 
@@ -45,7 +50,7 @@ public class DataSender implements Runnable {
     @Override
     public void run() {
         log.fine("Started.");
-        while (!stop.get()) {
+        while (!stop.get() || exchange.hasPendingResponses()) {
             for (final var session : exchange.getSessions()) {
                 final var outputStream = session.getOutputStream();
                 // process response, if any

@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class Client {
     private static final Pattern pattern = Pattern.compile("(# \\d+)");
-    private static final String SERVER_ADDRESS = "192.168.50.138";
+    private static final String SERVER_ADDRESS = "127.0.0.1";
     private static final int SERVER_PORT = 34567;
 
     private final Scanner scanner = new Scanner(System.in);

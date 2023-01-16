@@ -81,11 +81,8 @@ public class Exchange {
         }
     }
 
-    public boolean hasPendingResponses(String sessionId) {
-        if (!responseMap.containsKey(sessionId)) {
-            return false;
-        }
-        return !responseMap.get(sessionId).isEmpty();
+    public boolean hasPendingResponses() {
+        return responseMap.entrySet().stream().anyMatch(entry -> !entry.getValue().isEmpty());
     }
 
     /**

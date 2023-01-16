@@ -19,7 +19,7 @@ public class SocketServer implements Runnable {
     private static final Logger log = Logger.getLogger(SocketServer.class.getSimpleName());
 
     private static final int LISTENER_PORT = 34567;
-    private static final int SERVER_SOCKET_TIMEOUT_MS = 500;
+    private static final int SERVER_SOCKET_TIMEOUT_MS = 150;
 
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
 

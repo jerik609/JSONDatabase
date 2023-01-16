@@ -1,17 +1,12 @@
 package server;
 
 import server.interfaces.Exchange;
-import server.interfaces.local.Console;
-import server.interfaces.local.LocalCommandFactory;
 import server.interfaces.remote.*;
 import server.database.Database;
 import server.interfaces.Executor;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -91,7 +86,7 @@ public class Application {
                 throw new RuntimeException(e);
             }
         }
-        //System.exit(0);
+        System.exit(0);
 
         // sync thread pool shutdown
         pool.shutdown();
