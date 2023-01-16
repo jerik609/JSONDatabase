@@ -1,6 +1,7 @@
 package client;
 
 import com.beust.jcommander.Parameter;
+import com.google.gson.GsonBuilder;
 
 import java.io.*;
 import java.net.Socket;
@@ -29,6 +30,17 @@ public class Client {
             return Integer.parseInt(group.split(" ")[1]);
         }
         throw new RuntimeException("Invalid response: " + response);
+    }
+
+    public static void mrGson() {
+
+        var gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .serializeNulls()
+                .excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapter(GuitarBrand.class, new GuitarBrandGsonSerializer())
+                .create();
+
     }
 
     public void run(boolean withParams) {
