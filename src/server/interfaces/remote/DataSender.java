@@ -24,9 +24,17 @@ public class DataSender implements Runnable {
     }
 
     public void start() {
+        System.out.println("xxxxx");
         if (!stop.get() && !isRunning.get()) {
+            System.out.println("11111111111");
             log.fine("Starting.");
-            pool.submit(this);
+            System.out.println("2222222222");
+
+            var thread = new Thread(this);
+            thread.start();
+
+            //pool.submit(this);
+            System.out.println("33333333");
         } else {
             log.fine("Cannot start.");
         }

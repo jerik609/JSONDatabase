@@ -7,6 +7,8 @@ import server.interfaces.remote.*;
 import server.database.Database;
 import server.interfaces.Executor;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -50,20 +52,34 @@ public class Application {
 
         log.fine("---=== Starting JSON Database Application ===---");
 
+        System.out.println("hmm?");
+
         final var stopFlag = new AtomicBoolean(false);
 
-        final var scanner = new Scanner(System.in);
+        System.out.println("hmm?");
+
+        //final var scanner = new Scanner(System.in);
         final var executor = new Executor();
         final var database = new Database<>(1000, "");
 
+        System.out.println("hmm?");
+
         // local context
-        final var localCommandFactory = new LocalCommandFactory(stopFlag, database);
-        final var console = new Console(stopFlag, scanner, localCommandFactory, executor);
+        //final var localCommandFactory = new LocalCommandFactory(stopFlag, database);
+        //final var console = new Console(stopFlag, scanner, localCommandFactory, executor);
+
+        System.out.println("hmm?");
 
         // remote context
         final var pool = new ForkJoinPool(6);
+
+        System.out.println("hmm?");
+
         final var exchange = new Exchange();
         final var remoteCommandFactory = new RemoteCommandFactory(stopFlag, database, exchange);
+
+        System.out.println("hmm?");
+
         final var dataWorker = new DataWorker(stopFlag, pool, exchange, remoteCommandFactory, executor);
         final var dataReader = new DataReader(stopFlag, pool, exchange);
         final var dataSender = new DataSender(stopFlag, pool, exchange);
@@ -73,31 +89,52 @@ public class Application {
 
         // start the application
         dataSender.start();
+
+        System.out.println("hmm?!! 1");
         dataWorker.start();
+        System.out.println("hmm?!!! 2");
         dataReader.start();
+        System.out.println("hmm?!!! 3");
         socketServer.start();
+
+        System.out.println("hmm?!!! 4");
+
+        System.out.println("start" + LocalTime.now());
+
+        try {
+            sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("slept" + LocalTime.now());
 
         //console.start();
 
         //TODO: remove after tests are done?
-        while (!stopFlag.get()) {
-            try {
-                sleep(10);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
+//        while (!stopFlag.get()) {
+//            System.out.println("ffffffffffff");
+//            try {
+//                sleep(500);
+//            } catch (InterruptedException e) {
+//                System.out.println("uuuuuuuuuuuu");
+//                throw new RuntimeException(e);
+//            }
+//            System.out.println("zzzzzzzzzzzzzz");
+//        }
         //System.exit(0);
 
         // sync thread pool shutdown
-        pool.shutdown();
-        try {
-            if (!pool.awaitTermination(30, TimeUnit.SECONDS)) {
-                throw new RuntimeException("Thread pool failed to stop gracefully");
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Interrupted while trying to stop the thread pool");
-        }
+//        pool.shutdown();
+//        try {
+//            if (!pool.awaitTermination(30, TimeUnit.SECONDS)) {
+//                throw new RuntimeException("Thread pool failed to stop gracefully");
+//            }
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException("Interrupted while trying to stop the thread pool");
+//        }
+
+        System.out.println("Terminated");
 
         log.fine("Application terminated gracefully.");
     }

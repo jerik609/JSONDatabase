@@ -36,7 +36,12 @@ public class DataWorker implements Runnable {
     public void start() {
         if (!stop.get() && !isRunning.get()) {
             log.fine("Starting.");
-            pool.submit(this);
+
+            var thread = new Thread(this);
+            thread.start();
+
+
+            //pool.submit(this);
         } else {
             log.fine("Cannot start.");
         }
