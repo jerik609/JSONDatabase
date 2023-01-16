@@ -4,7 +4,6 @@ import server.interfaces.Exchange;
 import server.interfaces.Executor;
 import server.interfaces.common.Action;
 import server.interfaces.common.Utils;
-import server.interfaces.remote.data.Response;
 
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,12 +35,9 @@ public class DataWorker implements Runnable {
     public void start() {
         if (!stop.get() && !isRunning.get()) {
             log.fine("Starting.");
-
-            var thread = new Thread(this);
-            thread.start();
-
-
-            //pool.submit(this);
+//            var thread = new Thread(this);
+//            thread.start();
+            pool.submit(this);
         } else {
             log.fine("Cannot start.");
         }
@@ -59,9 +55,7 @@ public class DataWorker implements Runnable {
     @Override
     public void run() {
         log.fine("Started.");
-
         isRunning.getAndSet(true);
-
         while (!stop.get() && isRunning.get()) {
             exchange.takeRequest().ifPresent(
                 request -> {
@@ -74,7 +68,6 @@ public class DataWorker implements Runnable {
                     executor.run();
                 });
         }
-
         log.fine("Stopped.");
     }
 }

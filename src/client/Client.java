@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class Client {
     private static final Pattern pattern = Pattern.compile("(# \\d+)");
-    private static final String SERVER_ADDRESS = "127.0.0.1";
+    private static final String SERVER_ADDRESS = "192.168.50.138";
     private static final int SERVER_PORT = 34567;
 
     private final Scanner scanner = new Scanner(System.in);
@@ -31,8 +31,7 @@ public class Client {
         throw new RuntimeException("Invalid response: " + response);
     }
 
-    public void run() { //boolean withParams) {
-        System.out.println("Hello?");
+    public void run(boolean withParams) {
         try (
                 final var socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
                 final var inputStream = new DataInputStream(socket.getInputStream());
@@ -41,7 +40,7 @@ public class Client {
             System.out.println("Client started!");
             socket.setSoTimeout(5000);
 
-//            if (withParams) {
+            if (withParams) {
                 var command = type;
                 command += index != 0 ? " " + index : "";
                 if (message != null && !message.equals("null")) {
@@ -55,19 +54,19 @@ public class Client {
                 // receive response
                 final var response = inputStream.readUTF();
                 System.out.println("Received: " + response);
-//            } else {
-//                String input;
-//                do {
-//                    System.out.println("Provide input:");
-//                    input = scanner.nextLine();
-//
-//                    outputStream.writeUTF(input);
-//                    System.out.println("Sent: " + input);
-//
-//                    final var response = inputStream.readUTF();
-//                    System.out.println("Received: " + response);
-//                } while (!input.equals("DONE"));
-//            }
+            } else {
+                String input;
+                do {
+                    System.out.println("Provide input:");
+                    input = scanner.nextLine();
+
+                    outputStream.writeUTF(input);
+                    System.out.println("Sent: " + input);
+
+                    final var response = inputStream.readUTF();
+                    System.out.println("Received: " + response);
+                } while (!input.equals("DONE"));
+            }
         } catch (UnknownHostException e) {
             throw new RuntimeException("Unknown host: " + SERVER_ADDRESS + ":" + SERVER_PORT);
         } catch (IOException e) {

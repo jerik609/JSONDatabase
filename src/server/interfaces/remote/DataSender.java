@@ -2,7 +2,6 @@ package server.interfaces.remote;
 
 import server.interfaces.Exchange;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -24,17 +23,11 @@ public class DataSender implements Runnable {
     }
 
     public void start() {
-        System.out.println("xxxxx");
         if (!stop.get() && !isRunning.get()) {
-            System.out.println("11111111111");
             log.fine("Starting.");
-            System.out.println("2222222222");
-
-            var thread = new Thread(this);
-            thread.start();
-
-            //pool.submit(this);
-            System.out.println("33333333");
+//            var thread = new Thread(this);
+//            thread.start();
+            pool.submit(this);
         } else {
             log.fine("Cannot start.");
         }

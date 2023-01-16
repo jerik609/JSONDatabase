@@ -3,7 +3,6 @@ package server.interfaces.remote;
 import server.interfaces.Exchange;
 import server.interfaces.remote.data.Request;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -37,12 +36,9 @@ public class DataReader implements Runnable {
     public void start() {
         if (!stop.get() && !isRunning.get()) {
             log.fine("Starting.");
-
-            var thread = new Thread(this);
-            thread.start();
-
-
-            //pool.submit(this);
+//            var thread = new Thread(this);
+//            thread.start();
+            pool.submit(this);
         } else {
             log.fine("Cannot start.");
         }
