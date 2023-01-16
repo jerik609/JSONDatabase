@@ -86,7 +86,7 @@ public class Application {
                 throw new RuntimeException(e);
             }
         }
-        System.exit(0);
+        //System.exit(0);
 
         // sync thread pool shutdown
         pool.shutdown();
