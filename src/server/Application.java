@@ -103,8 +103,6 @@ public class Application {
             throw new RuntimeException("Interrupted while trying to stop the thread pool");
         }
 
-        System.out.println("Terminated");
-
         log.fine("Application terminated gracefully.");
     }
 }
