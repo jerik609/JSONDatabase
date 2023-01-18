@@ -4,6 +4,7 @@ import server.interfaces.Exchange;
 
 import java.io.IOException;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
@@ -27,14 +28,15 @@ public class DataSender implements Runnable {
         this.exchange = exchange;
     }
 
-    public void start() {
+    public ForkJoinTask<?> start() {
         if (!stop.get() && !isRunning.get()) {
             log.fine("Starting.");
 //            var thread = new Thread(this);
 //            thread.start();
-            pool.submit(this);
+            return pool.submit(this);
         } else {
             log.fine("Cannot start.");
+            return null;
         }
     }
 

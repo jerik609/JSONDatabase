@@ -1,12 +1,15 @@
 package server;
 
 import server.interfaces.Exchange;
+import server.interfaces.local.Console;
+import server.interfaces.local.LocalCommandFactory;
 import server.interfaces.remote.*;
 import server.database.Database;
 import server.interfaces.Executor;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -49,13 +52,13 @@ public class Application {
 
         final var stopFlag = new AtomicBoolean(false);
 
-        //final var scanner = new Scanner(System.in);
+        final var scanner = new Scanner(System.in);
         final var executor = new Executor();
         final var database = new Database<>(1000, "");
 
         // local context
-        //final var localCommandFactory = new LocalCommandFactory(stopFlag, database);
-        //final var console = new Console(stopFlag, scanner, localCommandFactory, executor);
+        final var localCommandFactory = new LocalCommandFactory(stopFlag, database);
+        final var console = new Console(stopFlag, scanner, localCommandFactory, executor);
 
         // remote context
         final var pool = new ForkJoinPool(6);
@@ -71,22 +74,21 @@ public class Application {
         System.out.println("Server started!");
 
         // start the application
-        dataSender.start();
-        dataWorker.start();
-        dataReader.start();
-        socketServer.start();
+        final var dataSenderTask = dataSender.start();
+        final var dataWorkerTask = dataWorker.start();
+        final var dataReaderTask = dataReader.start();
+        final var socketServerTask = socketServer.start();
 
-        //console.start();
+        console.start();
 
-        //TODO: remove after tests are done?
-        while (!stopFlag.get()) {
-            try {
-                sleep(10);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        //System.exit(0);
+        socketServerTask.join();
+        log.fine("SocketServer finished.");
+        dataReaderTask.join();
+        log.fine("DataReader finished.");
+        dataWorkerTask.join();
+        log.fine("DataWorker finished.");
+        dataSenderTask.join();
+        log.fine("DataSender finished.");
 
         // sync thread pool shutdown
         pool.shutdown();

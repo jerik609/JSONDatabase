@@ -6,6 +6,7 @@ import server.interfaces.common.Action;
 import server.interfaces.common.Utils;
 
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
@@ -32,14 +33,15 @@ public class DataWorker implements Runnable {
         this.executor = executor;
     }
 
-    public void start() {
+    public ForkJoinTask<?> start() {
         if (!stop.get() && !isRunning.get()) {
             log.fine("Starting.");
 //            var thread = new Thread(this);
 //            thread.start();
-            pool.submit(this);
+            return pool.submit(this);
         } else {
             log.fine("Cannot start.");
+            return null;
         }
     }
 
