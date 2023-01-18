@@ -1,5 +1,10 @@
 package server.database;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
+
+import javax.xml.crypto.Data;
 import java.util.HashMap;
 
 public class Database<T> {
@@ -10,6 +15,7 @@ public class Database<T> {
         return index > capacity;
     }
 
+    @Expose
     private final HashMap<Integer, T> database;
 
     public Database(int capacity, T emptyValue) {
@@ -71,5 +77,17 @@ public class Database<T> {
         }
 
         return builder.build();
+    }
+
+    public void SerializeToJson() {
+        var gsonB = new GsonBuilder();
+        var gson = gsonB.setPrettyPrinting().create();
+        var x = gson.toJson(this);
+        System.out.println(x);
+
+
+        var y = gson.fromJson(x, Database.class);
+        System.out.println(y.get(1));
+        System.out.println(y.get(2));
     }
 }

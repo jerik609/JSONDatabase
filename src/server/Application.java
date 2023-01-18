@@ -90,6 +90,8 @@ public class Application {
         dataSenderTask.join();
         log.fine("DataSender finished.");
 
+        database.SerializeToJson();
+
         // sync thread pool shutdown
         pool.shutdown();
         try {
