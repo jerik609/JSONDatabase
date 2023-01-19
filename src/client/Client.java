@@ -1,10 +1,11 @@
 package client;
 
 import com.beust.jcommander.Parameter;
-import common.request.DeleteRequest;
-import common.request.GetRequest;
-import common.request.Request;
-import common.request.SetRequest;
+import common.Message;
+import common.request.DeleteRemoteRequest;
+import common.request.GetRemoteRequest;
+import common.request.RemoteRequest;
+import common.request.SetRemoteRequest;
 
 import java.io.*;
 import java.net.Socket;
@@ -35,11 +36,11 @@ public class Client {
         throw new RuntimeException("Invalid response: " + response);
     }
 
-    private static Request buildRequest(String requestType, String key, String value) {
+    private static RemoteRequest buildRequest(String requestType, String key, String value) {
         return switch (requestType) {
-            case "get" -> new GetRequest(key);
-            case "set" -> new SetRequest(key, value);
-            case "delete" -> new DeleteRequest(key);
+            case "get" -> new GetRemoteRequest(key);
+            case "set" -> new SetRemoteRequest(key, value);
+            case "delete" -> new DeleteRemoteRequest(key);
             default -> throw new RuntimeException("Invalid request: " + requestType);
         };
     }
@@ -53,28 +54,32 @@ public class Client {
             System.out.println("Client started!");
             socket.setSoTimeout(5000);
 
-            if (withParams) {
+            do {
+                if (!withParams) {
+                    System.out.println("Provide input (or DONE for type to quit):");
+                    System.out.println("type: ");
+                    type = scanner.nextLine();
+                    System.out.println("key: ");
+                    index = scanner.nextLine();
+                    System.out.println("message: ");
+                    message = scanner.nextLine();
+                } else {
+                    type = "DONE";
+                }
+
                 final var request = buildRequest(type, index, message);
-                final var payload = request.getPayload();
+                final var message = new Message(request);
+                final var wireFormat = message.getWireFormat();
+
                 // send request
-                outputStream.writeUTF(payload);
-                System.out.println(payload);
+                outputStream.writeUTF(wireFormat);
+                System.out.println("Sent: " + wireFormat);
+
                 // receive response
                 final var response = inputStream.readUTF();
                 System.out.println("Received: " + response);
-            } else {
-                String input;
-                do {
-                    System.out.println("Provide input:");
-                    input = scanner.nextLine();
+            } while (!type.equals("DONE"));
 
-                    outputStream.writeUTF(input);
-                    System.out.println("Sent: " + input);
-
-                    final var response = inputStream.readUTF();
-                    System.out.println("Received: " + response);
-                } while (!input.equals("DONE"));
-            }
         } catch (UnknownHostException e) {
             throw new RuntimeException("Unknown host: " + SERVER_ADDRESS + ":" + SERVER_PORT);
         } catch (IOException e) {

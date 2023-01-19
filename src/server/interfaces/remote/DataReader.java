@@ -61,6 +61,10 @@ public class DataReader implements Runnable {
                 try {
                     if (inputStream.available() > 0) {
                         final var input = inputStream.readUTF();
+
+                        //final var request =
+
+
                         log.fine("[" + session.getSessionId() + "]: Input: " + input);
                         final var request = new Request(session.getSessionId(), input);
                         exchange.pushRequest(request);
