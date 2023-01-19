@@ -77,7 +77,7 @@ public class Application {
         final var dataReaderTask = dataReader.start();
         final var socketServerTask = socketServer.start();
 
-        console.start();
+        //console.start();
 
         // wait for processors to finish
         socketServerTask.join();

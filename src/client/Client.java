@@ -44,16 +44,18 @@ public class Client {
                     type = "DONE";
                 }
 
-                final var msg = new Message(type, index, message);
-                final var wireFormat = msg.getWireFormat();
+                if (!type.equals("DONE")) {
+                    final var msg = new Message(type, index, message);
+                    final var wireFormat = msg.getWireFormat();
 
-                // send request
-                outputStream.writeUTF(wireFormat);
-                System.out.println("Sent: " + wireFormat);
+                    // send request
+                    outputStream.writeUTF(wireFormat);
+                    System.out.println("Sent: " + wireFormat);
 
-                // receive response
-                final var response = inputStream.readUTF();
-                System.out.println("Received: " + response);
+                    // receive response
+                    final var response = inputStream.readUTF();
+                    System.out.println("Received: " + response);
+                }
             } while (!type.equals("DONE"));
 
         } catch (UnknownHostException e) {
