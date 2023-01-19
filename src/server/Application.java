@@ -15,8 +15,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.*;
 
-import static java.lang.Thread.sleep;
-
 public class Application {
     private static final Logger log = Logger.getLogger(Application.class.getSimpleName());
 
@@ -81,6 +79,7 @@ public class Application {
 
         console.start();
 
+        // wait for processors to finish
         socketServerTask.join();
         log.fine("SocketServer finished.");
         dataReaderTask.join();
