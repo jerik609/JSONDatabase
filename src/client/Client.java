@@ -45,16 +45,17 @@ public class Client {
                 }
 
                 if (!type.equals("DONE")) {
-                    final var msg = new Message(type, index, message);
-                    final var wireFormat = msg.getWireFormat();
+                    final var msgReq = new Message(type, index, message);
+                    final var wireFormat = msgReq.getWireFormat();
 
                     // send request
                     outputStream.writeUTF(wireFormat);
                     System.out.println("Sent: " + wireFormat);
 
                     // receive response
-                    final var response = inputStream.readUTF();
-                    System.out.println("Received: " + response);
+                    final var msgResp = Message.jsonToMessage(inputStream.readUTF());
+                    final var remoteResponse = msgResp.getResponse();
+                    System.out.println("Received: " + remoteResponse);
                 }
             } while (!type.equals("DONE"));
 

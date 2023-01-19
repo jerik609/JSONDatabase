@@ -1,5 +1,7 @@
 package server.interfaces.remote.commands;
 
+import common.response.ErrorRemoteResponse;
+import common.response.OkRemoteResponse;
 import server.database.Database;
 import server.database.ResponseCode;
 import server.interfaces.Command;
@@ -33,10 +35,10 @@ public class RemoteSetCommand implements Command {
         final var result = database.set(index, commandParams[1]);
         if (result.getResponseCode() == ResponseCode.OK) {
             log.fine("Success for: " + Arrays.toString(commandParams));
-            exchange.pushResponse(new Response(sessionId, "OK"));
+            exchange.pushResponse(new Response(sessionId, new OkRemoteResponse()));
         } else {
             log.fine("Failed for: " + Arrays.toString(commandParams));
-            exchange.pushResponse(new Response(sessionId, "ERROR"));
+            exchange.pushResponse(new Response(sessionId, new ErrorRemoteResponse()));
         }
         log.fine("Pushed response for result: " + result);
     }

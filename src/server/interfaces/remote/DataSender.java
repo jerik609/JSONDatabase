@@ -1,5 +1,6 @@
 package server.interfaces.remote;
 
+import common.Message;
 import server.interfaces.Exchange;
 
 import java.io.IOException;
@@ -59,7 +60,8 @@ public class DataSender implements Runnable {
                 exchange.takeResponse(session.getSessionId()).ifPresent(response -> {
                     try {
                         log.fine("[" + session.getSessionId() + "]: Response to send: " + response.payload());
-                        outputStream.writeUTF(response.payload());
+                        final var msg = new Message(response.payload());
+                        outputStream.writeUTF(msg.getWireFormat());
                     } catch (IOException e) {
                         log.warning("Failed to send response to client: " + e);
                         e.printStackTrace();

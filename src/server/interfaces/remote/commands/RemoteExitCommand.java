@@ -1,5 +1,6 @@
 package server.interfaces.remote.commands;
 
+import common.response.OkRemoteResponse;
 import server.interfaces.Command;
 import server.interfaces.Exchange;
 import server.interfaces.remote.data.Response;
@@ -23,7 +24,7 @@ public class RemoteExitCommand implements Command {
     @Override
     public void execute() {
         log.fine("Executing command");
-        exchange.pushResponse(new Response(sessionId, "OK"));
+        exchange.pushResponse(new Response(sessionId, new OkRemoteResponse()));
         stop.getAndSet(true);
         log.fine("Done executing command");
     }

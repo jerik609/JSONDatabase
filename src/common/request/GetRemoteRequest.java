@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 
 public class GetRemoteRequest implements RemoteRequest {
     @Expose
-    private static final String type = "get";
+    public static final String type = "get";
 
     @Expose
     private final String key;

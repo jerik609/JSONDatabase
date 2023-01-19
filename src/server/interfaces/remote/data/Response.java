@@ -1,4 +1,6 @@
 package server.interfaces.remote.data;
 
-public record Response(String sessionId, String payload) {
+import common.response.RemoteResponse;
+
+public record Response(String sessionId, RemoteResponse payload) {
 }

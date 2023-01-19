@@ -1,5 +1,7 @@
 package server.interfaces.remote.commands;
 
+import common.response.DataRemoteResponse;
+import common.response.ErrorRemoteResponse;
 import server.database.Database;
 import server.database.ResponseCode;
 import server.interfaces.Command;
@@ -32,11 +34,11 @@ public class RemoteGetCommand implements Command {
         if (result.getResponseCode() == ResponseCode.OK) {
             log.fine("Success for: " + Arrays.toString(commandParams));
             exchange.pushResponse(
-                    new Response(sessionId, result.getData()
-                            .orElseThrow(() -> new RuntimeException("Database query was successful, but returned no data."))));
+                    new Response(sessionId, new DataRemoteResponse(result.getData().orElseThrow(
+                                    () -> new RuntimeException("Database query was successful, but returned no data.")))));
         } else {
             log.fine("Failed for: " + Arrays.toString(commandParams));
-            exchange.pushResponse(new Response(sessionId, "ERROR"));
+            exchange.pushResponse(new Response(sessionId, new ErrorRemoteResponse()));
         }
         log.fine("Pushed response for result: " + result);
     }
