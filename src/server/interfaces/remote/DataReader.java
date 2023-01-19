@@ -1,5 +1,7 @@
 package server.interfaces.remote;
 
+import common.Message;
+import common.request.RemoteRequest;
 import server.interfaces.Exchange;
 import server.interfaces.remote.data.Request;
 
@@ -61,12 +63,10 @@ public class DataReader implements Runnable {
                 try {
                     if (inputStream.available() > 0) {
                         final var input = inputStream.readUTF();
-
-                        //final var request =
-
-
-                        log.fine("[" + session.getSessionId() + "]: Input: " + input);
-                        final var request = new Request(session.getSessionId(), input);
+                        log.fine("[" + session.getSessionId() + "]: raw input: " + input);
+                        final var message = Message.jsonToMessage(input);
+                        final var remoteRequest = message.getRequest();
+                        final var request = new Request(session.getSessionId(), remoteRequest);
                         exchange.pushRequest(request);
                     }
                 } catch (IOException e) {

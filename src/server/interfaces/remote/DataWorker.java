@@ -62,11 +62,10 @@ public class DataWorker implements Runnable {
             exchange.takeRequest().ifPresent(
                 request -> {
                     log.fine("Working on request: " + request);
-                    String[] commandArray = Utils.splitOffFirst(request.payload(), ' ');
                     executor.acceptCommand(remoteCommandFactory.getRemoteCommandFromRequest(
                             request.sessionId(),
-                            Action.from(commandArray[0]),
-                            commandArray[1]));
+                            Action.from(request.payload().getRequestType()),
+                            request.payload().getCommand()));
                     executor.run();
                 });
         }

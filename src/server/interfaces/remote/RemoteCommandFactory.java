@@ -23,7 +23,7 @@ public class RemoteCommandFactory {
         this.exchange = exchange;
     }
 
-    public Command getRemoteCommandFromRequest(String sessionId, Action action, String commandParams) {
+    public Command getRemoteCommandFromRequest(String sessionId, Action action, String[] commandParams) {
         return switch (action) {
             case SET -> new RemoteSetCommand(database, exchange, sessionId, commandParams);
             case GET -> new RemoteGetCommand(database, exchange, sessionId, commandParams);

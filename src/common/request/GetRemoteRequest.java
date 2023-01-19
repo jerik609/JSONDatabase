@@ -17,4 +17,16 @@ public class GetRemoteRequest implements RemoteRequest {
     public String getRequestType() {
         return type;
     }
+
+    @Override
+    public String[] getCommand() {
+        return new String[]{key};
+    }
+
+    @Override
+    public String toString() {
+        return "GetRemoteRequest{" +
+                "key='" + key + '\'' +
+                '}';
+    }
 }

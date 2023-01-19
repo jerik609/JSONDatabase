@@ -21,4 +21,17 @@ public class SetRemoteRequest implements RemoteRequest {
     public String getRequestType() {
         return type;
     }
+
+    @Override
+    public String[] getCommand() {
+        return new String[]{key, value};
+    }
+
+    @Override
+    public String toString() {
+        return "SetRemoteRequest{" +
+                "key='" + key + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
 }

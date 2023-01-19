@@ -30,6 +30,10 @@ public class Message {
         this.payload = gson.toJson(request);
     }
 
+    public static Message jsonToMessage(String jsonStr) {
+        return gson.fromJson(jsonStr, Message.class);
+    }
+
     public RemoteRequest getRequest() {
         return switch (type) {
             case "get" -> gson.fromJson(payload, GetRemoteRequest.class);
