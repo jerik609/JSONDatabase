@@ -1,6 +1,5 @@
 package server.database;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 
 import java.util.HashMap;
@@ -9,12 +8,15 @@ public class Database<T> {
     private final int capacity;
     private final T emptyValue;
 
-    private boolean isOutOfBounds(int index) {
-        return index > capacity;
+    private boolean isOutOfBounds(String index) {
+        if (database.containsKey(index)) {
+            return false;
+        }
+        return database.size() + 1 > capacity;
     }
 
     @Expose
-    private final HashMap<Integer, T> database;
+    private final HashMap<String, T> database;
 
     public Database(int capacity, T emptyValue) {
         this.capacity = capacity;
@@ -22,7 +24,7 @@ public class Database<T> {
         this.database = new HashMap<>(capacity);
     }
 
-    public DatabaseResult<T> get(Integer key) {
+    public DatabaseResult<T> get(String key) {
         var builder = new DatabaseResult.Builder<T>();
 
         if (isOutOfBounds(key)) {
@@ -43,7 +45,7 @@ public class Database<T> {
         return builder.build();
     }
 
-    public DatabaseResult<T> set(Integer key, T value) {
+    public DatabaseResult<T> set(String key, T value) {
         var builder = new DatabaseResult.Builder<T>();
 
         if (isOutOfBounds(key)) {
@@ -57,7 +59,7 @@ public class Database<T> {
         return builder.build();
     }
 
-    public DatabaseResult<T> delete(Integer key) {
+    public DatabaseResult<T> delete(String key) {
         var builder = new DatabaseResult.Builder<T>();
 
         if (isOutOfBounds(key)) {
@@ -75,17 +77,5 @@ public class Database<T> {
         }
 
         return builder.build();
-    }
-
-    public void SerializeToJson() {
-        var gsonB = new GsonBuilder();
-        var gson = gsonB.setPrettyPrinting().create();
-        var x = gson.toJson(this);
-        System.out.println(x);
-
-
-        var y = gson.fromJson(x, Database.class);
-        System.out.println(y.get(1));
-        System.out.println(y.get(2)); // if no data, returns an error
     }
 }

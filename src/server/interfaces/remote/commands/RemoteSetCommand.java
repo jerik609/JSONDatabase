@@ -30,7 +30,7 @@ public class RemoteSetCommand implements Command {
     @Override
     public void execute() {
         log.fine("Executing command for " + Arrays.toString(commandParams));
-        final var index = Integer.parseInt(commandParams[0]);
+        final var index = commandParams[0];
         final var result = database.set(index, commandParams[1]);
         if (result.getResponseCode() == ResponseCode.OK) {
             log.fine("Success for: " + Arrays.toString(commandParams));

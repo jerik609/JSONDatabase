@@ -15,7 +15,7 @@ public class GetCommand implements Command {
 
     @Override
     public void execute() {
-        final var index = Integer.parseInt(commandParams);
+        final var index = commandParams;
         final var result = database.get(index);
         if (result.getResponseCode() == ResponseCode.OK) {
             System.out.println(result.getData()

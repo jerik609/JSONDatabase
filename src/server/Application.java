@@ -1,5 +1,6 @@
 package server;
 
+import server.database.Persistence;
 import server.interfaces.Exchange;
 import server.interfaces.local.Console;
 import server.interfaces.local.LocalCommandFactory;
@@ -52,7 +53,7 @@ public class Application {
 
         final var scanner = new Scanner(System.in);
         final var executor = new Executor();
-        final var database = new Database<>(1000, "");
+        final var database = Persistence.loadDbFromFile().orElseGet(() -> new Database<>(1000, ""));
 
         // local context
         final var localCommandFactory = new LocalCommandFactory(stopFlag, database);
@@ -89,7 +90,7 @@ public class Application {
         dataSenderTask.join();
         log.fine("DataSender finished.");
 
-        database.SerializeToJson();
+        Persistence.persistDatabase(database);
 
         // sync thread pool shutdown
         pool.shutdown();

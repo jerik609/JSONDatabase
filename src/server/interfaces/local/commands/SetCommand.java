@@ -17,7 +17,7 @@ public class SetCommand implements Command {
     @Override
     public void execute() {
         final var params = Utils.splitOffFirst(commandParams, ' ');
-        final var index = Integer.parseInt(params[0]);
+        final var index = params[0];
         final var result = database.set(index, params[1]);
         if (result.getResponseCode() == ResponseCode.OK) {
             System.out.println("OK");
