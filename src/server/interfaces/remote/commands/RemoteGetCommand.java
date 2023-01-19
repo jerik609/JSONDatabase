@@ -38,7 +38,7 @@ public class RemoteGetCommand implements Command {
                                     () -> new RuntimeException("Database query was successful, but returned no data.")))));
         } else {
             log.fine("Failed for: " + Arrays.toString(commandParams));
-            exchange.pushResponse(new Response(sessionId, new ErrorRemoteResponse()));
+            exchange.pushResponse(new Response(sessionId, new ErrorRemoteResponse("No such key")));
         }
         log.fine("Pushed response for result: " + result);
     }

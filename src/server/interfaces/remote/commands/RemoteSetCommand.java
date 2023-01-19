@@ -6,7 +6,6 @@ import server.database.Database;
 import server.database.ResponseCode;
 import server.interfaces.Command;
 import server.interfaces.Exchange;
-import server.interfaces.common.Utils;
 import server.interfaces.remote.data.Response;
 
 import java.util.Arrays;
@@ -38,7 +37,7 @@ public class RemoteSetCommand implements Command {
             exchange.pushResponse(new Response(sessionId, new OkRemoteResponse()));
         } else {
             log.fine("Failed for: " + Arrays.toString(commandParams));
-            exchange.pushResponse(new Response(sessionId, new ErrorRemoteResponse()));
+            exchange.pushResponse(new Response(sessionId, new ErrorRemoteResponse("No such key")));
         }
         log.fine("Pushed response for result: " + result);
     }
