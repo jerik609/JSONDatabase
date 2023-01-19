@@ -1,6 +1,10 @@
 package client;
 
 import com.beust.jcommander.Parameter;
+import common.request.DeleteRequest;
+import common.request.GetRequest;
+import common.request.Request;
+import common.request.SetRequest;
 
 import java.io.*;
 import java.net.Socket;
@@ -18,7 +22,7 @@ public class Client {
     @Parameter(names={"--type", "-t"})
     String type;
     @Parameter(names={"--index", "-i"})
-    int index;
+    String index;
     @Parameter(names={"--message", "-m"})
     String message;
 
@@ -31,6 +35,15 @@ public class Client {
         throw new RuntimeException("Invalid response: " + response);
     }
 
+    private static Request buildRequest(String requestType, String key, String value) {
+        return switch (requestType) {
+            case "get" -> new GetRequest(key);
+            case "set" -> new SetRequest(key, value);
+            case "delete" -> new DeleteRequest(key);
+            default -> throw new RuntimeException("Invalid request: " + requestType);
+        };
+    }
+
     public void run(boolean withParams) {
         try (
                 final var socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
@@ -41,16 +54,11 @@ public class Client {
             socket.setSoTimeout(5000);
 
             if (withParams) {
-                var command = type;
-                command += index != 0 ? " " + index : "";
-                if (message != null && !message.equals("null")) {
-                    command += " " + message;
-                }
-
+                final var request = buildRequest(type, index, message);
+                final var payload = request.getPayload();
                 // send request
-                outputStream.writeUTF(command);
-                System.out.println("Sent: " + command);
-
+                outputStream.writeUTF(payload);
+                System.out.println(payload);
                 // receive response
                 final var response = inputStream.readUTF();
                 System.out.println("Received: " + response);
