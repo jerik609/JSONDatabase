@@ -53,9 +53,11 @@ public class Client {
                     System.out.println("Sent: " + wireFormat);
 
                     // receive response
-                    final var msgResp = Message.jsonToMessage(inputStream.readUTF());
+                    final var responseStr = inputStream.readUTF();
+                    final var msgResp = Message.jsonToMessage(responseStr);
                     final var remoteResponse = msgResp.getResponse();
-                    System.out.println("Received: " + remoteResponse);
+                    System.out.println("Received: " + responseStr);
+                    //System.out.println("Received: " + remoteResponse);
                 }
             } while (!type.equals("DONE"));
 

@@ -86,6 +86,6 @@ public class Database<T> {
 
         var y = gson.fromJson(x, Database.class);
         System.out.println(y.get(1));
-        System.out.println(y.get(2));
+        System.out.println(y.get(2)); // if no data, returns an error
     }
 }

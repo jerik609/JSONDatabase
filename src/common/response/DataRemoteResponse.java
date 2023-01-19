@@ -6,6 +6,7 @@ public class DataRemoteResponse implements RemoteResponse {
     @Expose
     public static final String type = "ok_data";
 
+    @Expose
     private final String value;
 
     public DataRemoteResponse(String value) {

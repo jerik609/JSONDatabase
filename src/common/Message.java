@@ -16,7 +16,7 @@ public class Message {
     private static Gson gsonProvider() {
         final var gsonBuilder = new GsonBuilder();
         return gsonBuilder
-                .setPrettyPrinting()
+                //.setPrettyPrinting()
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
     }
