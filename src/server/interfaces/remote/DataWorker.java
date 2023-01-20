@@ -59,6 +59,7 @@ public class DataWorker implements Runnable {
         log.fine("Started.");
         isRunning.getAndSet(true);
         while (!stop.get() && isRunning.get()) {
+            // take request and process it
             exchange.takeRequest().ifPresent(
                 request -> {
                     log.fine("Working on request: " + request);

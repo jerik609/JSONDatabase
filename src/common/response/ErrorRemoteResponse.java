@@ -1,5 +1,6 @@
 package common.response;
 
+import client.Repackaged;
 import com.google.gson.annotations.Expose;
 
 public class ErrorRemoteResponse implements RemoteResponse {
@@ -16,5 +17,10 @@ public class ErrorRemoteResponse implements RemoteResponse {
     @Override
     public String getResponseType() {
         return type;
+    }
+
+    @Override
+    public Repackaged repackage() {
+        return new Repackaged("ERROR", null, reason);
     }
 }

@@ -1,5 +1,6 @@
 package common.response;
 
+import client.Repackaged;
 import com.google.gson.annotations.Expose;
 
 public class DataRemoteResponse implements RemoteResponse {
@@ -23,5 +24,10 @@ public class DataRemoteResponse implements RemoteResponse {
         return "DataRemoteResponse{" +
                 "value='" + value + '\'' +
                 '}';
+    }
+
+    @Override
+    public Repackaged repackage() {
+        return new Repackaged("OK", value, null);
     }
 }

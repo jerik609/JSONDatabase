@@ -67,6 +67,7 @@ public class DataReader implements Runnable {
                         final var message = Message.jsonToMessage(input);
                         final var remoteRequest = message.getRequest();
                         final var request = new Request(session.getSessionId(), remoteRequest);
+                        // enqueue request for processing
                         exchange.pushRequest(request);
                     }
                 } catch (IOException e) {
