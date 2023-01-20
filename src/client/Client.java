@@ -2,7 +2,6 @@ package client;
 
 import com.beust.jcommander.Parameter;
 import common.Message;
-import common.request.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -17,10 +16,10 @@ public class Client {
 
     @Parameter(names={"--type", "-t"})
     String type;
-    @Parameter(names={"--index", "-i"})
-    String index;
-    @Parameter(names={"--message", "-m"})
-    String message;
+    @Parameter(names={"--key", "-k"})
+    String key;
+    @Parameter(names={"--value", "-v"})
+    String value;
 
     public void run(boolean withParams) {
         try (
@@ -37,20 +36,18 @@ public class Client {
                     System.out.print("type: ");
                     type = scanner.nextLine();
                     System.out.print("key: ");
-                    index = scanner.nextLine();
+                    key = scanner.nextLine();
                     System.out.print("message: ");
-                    message = scanner.nextLine();
-                } else {
-                    type = "DONE";
+                    value = scanner.nextLine();
                 }
 
                 if (!type.equals("DONE")) {
-                    final var msgReq = new Message(type, index, message);
+                    final var msgReq = new Message(type, key, value);
+                    System.out.println("Sent: " + msgReq.getFooPrint());
                     final var wireFormat = msgReq.getWireFormat();
 
                     // send request
                     outputStream.writeUTF(wireFormat);
-                    System.out.println("Sent: " + wireFormat);
 
                     // receive response
                     final var responseStr = inputStream.readUTF();
@@ -58,6 +55,12 @@ public class Client {
                     final var remoteResponse = msgResp.getResponse();
                     System.out.println("Received: " + remoteResponse.repackage().getJson());
                 }
+
+                // if with params, stop immediately
+                if (withParams) {
+                    type = "DONE";
+                }
+
             } while (!type.equals("DONE"));
 
         } catch (UnknownHostException e) {

@@ -26,7 +26,7 @@ public class Persistence {
                 ) {
             fw.write(serializedDb);
         } catch (IOException e) {
-            log.warning("Failed to persist the DB: " + e);
+            log.fine("Failed to persist the DB: " + e);
         }
     }
 
@@ -36,7 +36,7 @@ public class Persistence {
             final var dbStr = Files.readString(filePath);
             return Optional.of(gson.fromJson(dbStr, Database.class));
         } catch (IOException e) {
-            log.warning("DB file could not be read: " + e);
+            log.fine("DB file could not be read: " + e);
             return Optional.empty();
         }
     }

@@ -73,4 +73,8 @@ public class Message {
     public String getWireFormat() {
         return gson.toJson(this);
     }
+
+    public String getFooPrint() {
+        return "{\"type\":\"" + type + "\"," + payload.substring(1);
+    }
 }
