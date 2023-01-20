@@ -71,9 +71,9 @@ public class Database<T> {
             builder.responseCode(ResponseCode.OK);
             database.remove(key);
         } else {
-            builder.responseCode(ResponseCode.OK);
-            database.put(key, emptyValue);
-            //builder.responseCode(ResponseCode.ERROR_NO_DATA);
+//            builder.responseCode(ResponseCode.OK);
+//            database.put(key, emptyValue);
+            builder.responseCode(ResponseCode.ERROR_NO_DATA);
         }
 
         return builder.build();
