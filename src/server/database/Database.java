@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import java.util.HashMap;
 
 public class Database<T> {
+    @Expose
     private final int capacity;
     @Expose
     private final HashMap<String, T> database;
