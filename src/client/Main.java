@@ -9,6 +9,7 @@ public class Main {
                 .addObject(client)
                 .build()
                 .parse(args);
-        client.run(true);
+        //client.runInteractive();
+        client.runWithParams();
     }
 }

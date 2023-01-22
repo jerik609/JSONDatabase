@@ -1,16 +1,24 @@
 package client;
 
 import com.beust.jcommander.Parameter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import common.Message;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Client {
+    private static final Gson gson = new GsonBuilder().create();
     private static final String SERVER_ADDRESS = "127.0.0.1";
     private static final int SERVER_PORT = 34567;
+
+    private static final String FILE_REQUEST_PATH_TEST_ENVIRONMENT = System.getProperty("user.dir") + "/src/client/data/";
+    private static final String FILE_REQUEST_PATH_LOCAL_ENVIRONMENT = System.getProperty("user.dir") + "/JSON Database/task/src/client/data/";
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -20,8 +28,18 @@ public class Client {
     String key;
     @Parameter(names={"--value", "-v"})
     String value;
+    @Parameter(names={"--input_file", "-in"})
+    String filePath;
 
-    public void run(boolean withParams) {
+    public void runWithParams() {
+        run(true);
+    }
+
+    public  void runInteractive() {
+        run(false);
+    }
+
+    private void run(boolean withParams) {
         try (
                 final var socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
                 final var inputStream = new DataInputStream(socket.getInputStream());
@@ -41,8 +59,16 @@ public class Client {
                     value = scanner.nextLine();
                 }
 
-                if (!type.equals("DONE")) {
-                    final var msgReq = new Message(type, key, value);
+                if (type == null || !type.equals("DONE")) {
+                    Message msgReq;
+                    // read input from file
+                    if (withParams && filePath != null && !filePath.isEmpty()) {
+                        final var inputFileData = gson.fromJson(Files.readString(Paths.get(FILE_REQUEST_PATH_LOCAL_ENVIRONMENT + filePath)), InputFileData.class);
+                        msgReq = new Message(inputFileData.type, inputFileData.key, inputFileData.value);
+                    // read input from params
+                    } else {
+                        msgReq = new Message(type, key, value);
+                    }
                     System.out.println("Sent: " + msgReq.getFooPrint());
                     final var wireFormat = msgReq.getWireFormat();
 
