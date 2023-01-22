@@ -14,10 +14,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RemoteCommandFactory {
     private final AtomicBoolean stop;
-    private final Database<String> database;
+    private final Database database;
     private final Exchange exchange;
 
-    public RemoteCommandFactory(AtomicBoolean stop, Database<String> database, Exchange exchange) {
+    public RemoteCommandFactory(AtomicBoolean stop, Database database, Exchange exchange) {
         this.stop = stop;
         this.database = database;
         this.exchange = exchange;

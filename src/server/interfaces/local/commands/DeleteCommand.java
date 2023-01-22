@@ -5,10 +5,10 @@ import server.database.ResponseCode;
 import server.interfaces.Command;
 
 public class DeleteCommand implements Command {
-    private final Database<String> database;
+    private final Database database;
     private final String commandParams;
 
-    public DeleteCommand(Database<String> database, String commandParams) {
+    public DeleteCommand(Database database, String commandParams) {
         this.database = database;
         this.commandParams = commandParams;
     }

@@ -9,9 +9,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LocalCommandFactory {
     private final AtomicBoolean stop;
-    private final Database<String> database;
+    private final Database database;
 
-    public LocalCommandFactory(AtomicBoolean stop, Database<String> database) {
+    public LocalCommandFactory(AtomicBoolean stop, Database database) {
         this.stop = stop;
         this.database = database;
     }

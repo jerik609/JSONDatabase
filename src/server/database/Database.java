@@ -1,16 +1,17 @@
 package server.database;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import java.util.HashMap;
 
-public class Database<T> {
+public class Database {
     @Expose
     private final int capacity;
     @Expose
-    private final HashMap<String, T> database;
+    private final HashMap<String, JsonObject> database;
 
-    public Database(int capacity, HashMap<String, T> database) {
+    public Database(int capacity, HashMap<String, JsonObject> database) {
         this.capacity = capacity;
         this.database = database;
     }
@@ -27,8 +28,8 @@ public class Database<T> {
         return database.size() + 1 > capacity;
     }
 
-    public DatabaseResult<T> get(String key) {
-        var builder = new DatabaseResult.Builder<T>();
+    public DatabaseResult<JsonObject> get(String key) {
+        var builder = new DatabaseResult.Builder<JsonObject>();
 
         if (isOutOfBounds(key)) {
             builder.responseCode(ResponseCode.ERROR_OUT_OF_BOUNDS);
@@ -46,8 +47,8 @@ public class Database<T> {
         return builder.build();
     }
 
-    public DatabaseResult<T> set(String key, T value) {
-        var builder = new DatabaseResult.Builder<T>();
+    public DatabaseResult<JsonObject> set(String key, JsonObject value) {
+        var builder = new DatabaseResult.Builder<JsonObject>();
 
         if (isOutOfBounds(key)) {
             builder.responseCode(ResponseCode.ERROR_OUT_OF_BOUNDS);
@@ -60,8 +61,8 @@ public class Database<T> {
         return builder.build();
     }
 
-    public DatabaseResult<T> delete(String key) {
-        var builder = new DatabaseResult.Builder<T>();
+    public DatabaseResult<JsonObject> delete(String key) {
+        var builder = new DatabaseResult.Builder<JsonObject>();
 
         if (isOutOfBounds(key)) {
             builder.responseCode(ResponseCode.ERROR_OUT_OF_BOUNDS);

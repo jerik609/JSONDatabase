@@ -14,12 +14,12 @@ import java.util.logging.Logger;
 public class RemoteDeleteCommand implements Command {
     private static final Logger log = Logger.getLogger(RemoteDeleteCommand.class.getSimpleName());
 
-    private final Database<String> database;
+    private final Database database;
     private final Exchange exchange;
     private final String sessionId;
     private final String[] commandParams;
 
-    public RemoteDeleteCommand(Database<String> database, Exchange exchange, String sessionId, String[] commandParams) {
+    public RemoteDeleteCommand(Database database, Exchange exchange, String sessionId, String[] commandParams) {
         this.database = database;
         this.exchange = exchange;
         this.sessionId = sessionId;

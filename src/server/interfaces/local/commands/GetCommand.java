@@ -5,10 +5,10 @@ import server.database.ResponseCode;
 import server.interfaces.Command;
 
 public class GetCommand implements Command {
-    private final Database<String> database;
+    private final Database database;
     private final String commandParams;
 
-    public GetCommand(Database<String> database, String commandParams) {
+    public GetCommand(Database database, String commandParams) {
         this.database = database;
         this.commandParams = commandParams;
     }
