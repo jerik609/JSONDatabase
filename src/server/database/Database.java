@@ -9,12 +9,12 @@ public class Database<T> {
     @Expose
     private final HashMap<String, T> database;
 
-    public Database(int capacity, T emptyValue, HashMap<String, T> database) {
+    public Database(int capacity, HashMap<String, T> database) {
         this.capacity = capacity;
         this.database = database;
     }
 
-    public Database(int capacity, T emptyValue) {
+    public Database(int capacity) {
         this.capacity = capacity;
         this.database = new HashMap<>(capacity);
     }

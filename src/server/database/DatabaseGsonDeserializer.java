@@ -20,6 +20,6 @@ public class DatabaseGsonDeserializer implements JsonDeserializer<Database<Strin
         final HashMap<String, String> database = jsonDatabaseDatabase == null ?
                 new HashMap<>(capacity) : context.deserialize(jsonDatabaseDatabase, HashMap.class);
 
-        return new Database<>(capacity, emptyValue, database);
+        return new Database<>(capacity, database);
     }
 }
