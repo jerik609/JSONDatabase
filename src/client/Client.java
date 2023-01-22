@@ -19,7 +19,6 @@ public class Client {
 
     private static final String FILE_REQUEST_PATH_TEST_ENVIRONMENT = System.getProperty("user.dir") + "/src/client/data/";
     private static final String FILE_REQUEST_PATH_LOCAL_ENVIRONMENT = System.getProperty("user.dir") + "/JSON Database/task/src/client/data/";
-
     private static final String THE_LOCATION = FILE_REQUEST_PATH_TEST_ENVIRONMENT;
 
     private final Scanner scanner = new Scanner(System.in);
