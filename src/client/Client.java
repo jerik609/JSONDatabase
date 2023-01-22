@@ -20,6 +20,8 @@ public class Client {
     private static final String FILE_REQUEST_PATH_TEST_ENVIRONMENT = System.getProperty("user.dir") + "/src/client/data/";
     private static final String FILE_REQUEST_PATH_LOCAL_ENVIRONMENT = System.getProperty("user.dir") + "/JSON Database/task/src/client/data/";
 
+    private static final String THE_LOCATION = FILE_REQUEST_PATH_TEST_ENVIRONMENT;
+
     private final Scanner scanner = new Scanner(System.in);
 
     @Parameter(names={"--type", "-t"})
@@ -63,7 +65,7 @@ public class Client {
                     Message msgReq;
                     // read input from file
                     if (withParams && filePath != null && !filePath.isEmpty()) {
-                        final var inputFileData = gson.fromJson(Files.readString(Paths.get(FILE_REQUEST_PATH_LOCAL_ENVIRONMENT + filePath)), InputFileData.class);
+                        final var inputFileData = gson.fromJson(Files.readString(Paths.get(THE_LOCATION + filePath)), InputFileData.class);
                         msgReq = new Message(inputFileData.type, inputFileData.key, inputFileData.value);
                     // read input from params
                     } else {

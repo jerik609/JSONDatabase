@@ -7,21 +7,26 @@ import java.util.HashMap;
 public class Database<T> {
     private final int capacity;
     private final T emptyValue;
+    @Expose
+    private final HashMap<String, T> database;
+
+    public Database(int capacity, T emptyValue, HashMap<String, T> database) {
+        this.capacity = capacity;
+        this.emptyValue = emptyValue;
+        this.database = database;
+    }
+
+    public Database(int capacity, T emptyValue) {
+        this.capacity = capacity;
+        this.emptyValue = emptyValue;
+        this.database = new HashMap<>(capacity);
+    }
 
     private boolean isOutOfBounds(String index) {
         if (database.containsKey(index)) {
             return false;
         }
         return database.size() + 1 > capacity;
-    }
-
-    @Expose
-    private final HashMap<String, T> database;
-
-    public Database(int capacity, T emptyValue) {
-        this.capacity = capacity;
-        this.emptyValue = emptyValue;
-        this.database = new HashMap<>(capacity);
     }
 
     public DatabaseResult<T> get(String key) {

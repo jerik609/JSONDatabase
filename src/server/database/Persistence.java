@@ -3,6 +3,7 @@ package server.database;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,11 +15,16 @@ public class Persistence {
 
     private static final String FILENAME_TEST_ENVIRONMENT = System.getProperty("user.dir") + "/src/server/data/db.json";
     private static final String FILENAME_LOCAL_ENVIRONMENT = System.getProperty("user.dir") + "/JSON Database/task/src/server/data/db.json";
+    private static final String THE_LOCATION = FILENAME_TEST_ENVIRONMENT;
 
-    private static final String DATABASE_DIR = "/server/data";
-    private static final String DATABASE_FILE = "db.json";
+    private static final Gson gson = getGsonBuilder().create();
 
-    private static final Gson gson = new GsonBuilder().create();
+    private static GsonBuilder getGsonBuilder() {
+        final var gsonBuilder = new GsonBuilder();
+        return gsonBuilder
+                .registerTypeAdapter(Database.class, new DatabaseGsonDeserializer())
+                .excludeFieldsWithoutExposeAnnotation();
+    }
 
     public static void persistDatabase(Database<String> database) {
         final var serializedDb = gson.toJson(database);
@@ -31,7 +37,7 @@ public class Persistence {
 //            log.fine("Could not create directory: " + e);
 //        }
 
-        log.fine("Persisting DB to: " + FILENAME_LOCAL_ENVIRONMENT);
+        log.fine("Persisting DB to: " + THE_LOCATION);
 
         try (
                 final FileWriter fw = new FileWriter(filePath.toFile());
@@ -45,22 +51,24 @@ public class Persistence {
     }
 
     public static Optional<Database<String>> loadDbFromFile() {
-        final var filePath = Paths.get(FILENAME_LOCAL_ENVIRONMENT);
+        final var filePath = Paths.get(THE_LOCATION);
 
-        log.fine("Trying to init DB from: " + FILENAME_LOCAL_ENVIRONMENT);
+        log.fine("Trying to init DB from: " + THE_LOCATION);
 
         if (Files.exists(filePath)) {
             try {
                 final var dbStr = Files.readString(filePath);
+                log.fine(dbStr);
                 log.fine("DB restored.");
                 return Optional.of(gson.fromJson(dbStr, Database.class));
             } catch (IOException e) {
-                throw new RuntimeException("Could not read the DB file: " + e);
+                log.fine("Could not read the DB file: " + e);
+                return Optional.empty();
             }
         } else {
             System.out.println("Can't find /server/data/db.json file.");
-            throw new RuntimeException("no file");
-            //return Optional.empty();
+            log.fine("Can't find file: " + THE_LOCATION);
+            return Optional.empty();
         }
     }
 }
