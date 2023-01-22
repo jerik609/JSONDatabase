@@ -6,19 +6,16 @@ import java.util.HashMap;
 
 public class Database<T> {
     private final int capacity;
-    private final T emptyValue;
     @Expose
     private final HashMap<String, T> database;
 
     public Database(int capacity, T emptyValue, HashMap<String, T> database) {
         this.capacity = capacity;
-        this.emptyValue = emptyValue;
         this.database = database;
     }
 
     public Database(int capacity, T emptyValue) {
         this.capacity = capacity;
-        this.emptyValue = emptyValue;
         this.database = new HashMap<>(capacity);
     }
 
@@ -39,8 +36,6 @@ public class Database<T> {
 
         var item = database.get(key);
         if (item == null) {
-            builder.responseCode(ResponseCode.ERROR_NO_DATA);
-        } else if (item.equals(emptyValue)) {
             builder.responseCode(ResponseCode.ERROR_NO_DATA);
         } else {
             builder.responseCode(ResponseCode.OK);
@@ -76,8 +71,6 @@ public class Database<T> {
             builder.responseCode(ResponseCode.OK);
             database.remove(key);
         } else {
-//            builder.responseCode(ResponseCode.OK);
-//            database.put(key, emptyValue);
             builder.responseCode(ResponseCode.ERROR_NO_DATA);
         }
 
