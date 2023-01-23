@@ -35,7 +35,7 @@ public class Database {
 
     private record SearchResult(String key, JsonElement parentElement, JsonElement element) {}
 
-    private static SearchResult filterDataForSecondaryKeys(JsonElement item, String[] keys) {
+    private static SearchResult filterDataForSecondaryKeys(JsonObject item, String[] keys) {
         final var value = item.get("value");
         final var secondaryKeys = Arrays.copyOfRange(keys, 1, keys.length);
 
@@ -68,11 +68,17 @@ public class Database {
         if (item == null) {
             builder.responseCode(ResponseCode.ERROR_NO_DATA);
             builder.data(null);
-        } else {
+        } else if (item instanceof JsonObject jsonObject) {
             builder.responseCode(ResponseCode.OK);
-            builder.data(filterDataForSecondaryKeys(item, keys).element());
-        }
+            builder.data(filterDataForSecondaryKeys(jsonObject, keys).element());
+        } else {
+            if (keys.length == 1) {
+                builder.data(item);
+            } else {
+                throw new RuntimeException("Attempting to traverse a primitive type: " + item + ", keys: " + Arrays.toString(keys));
+            }
 
+        }
         return builder.build();
     }
 
