@@ -55,7 +55,7 @@ public class Client {
 
     private static void sendRequest(DataOutputStream outputStream, Message request) throws IOException {
         final var wireFormat = request.getWireFormat();
-        System.out.println("Sent: " + wireFormat);
+        System.out.println("Sent: " + request.getPayload());
         outputStream.writeUTF(wireFormat);
     }
 
