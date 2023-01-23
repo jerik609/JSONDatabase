@@ -41,6 +41,7 @@ public class Client {
     private static String buildJsonRequestFromFile(String filePath) throws IOException {
         final var jsonStr = Files.readString(Paths.get(THE_LOCATION + filePath));
         // read into json to validate
+        System.out.println("Sent: " + jsonStr);
         final var jsonObject = gson.fromJson(jsonStr, JsonObject.class);
         return gson.toJson(jsonObject);
     }
@@ -55,7 +56,6 @@ public class Client {
 
     private static void sendRequest(DataOutputStream outputStream, Message request) throws IOException {
         final var wireFormat = request.getWireFormat();
-        System.out.println("Sent: " + request.getPayload());
         outputStream.writeUTF(wireFormat);
     }
 
