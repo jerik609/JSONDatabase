@@ -74,16 +74,14 @@ public class Database {
 
         if (item == null) {
             builder.responseCode(ResponseCode.ERROR_NO_DATA);
+        } else if (keys.length == 1) {
+            builder.responseCode(ResponseCode.OK);
+            builder.data(item);
         } else if (item instanceof JsonObject jsonObject) {
             builder.responseCode(ResponseCode.OK);
             builder.data(filterDataForSecondaryKeys(jsonObject, keys).element());
         } else {
-            if (keys.length == 1) {
-                builder.responseCode(ResponseCode.OK);
-                builder.data(item);
-            } else {
-                builder.responseCode(ResponseCode.ERROR_NO_DATA);
-            }
+            builder.responseCode(ResponseCode.ERROR_NO_DATA);
         }
         return builder.build();
     }
@@ -102,30 +100,37 @@ public class Database {
             return builder.build();
         }
 
-        builder.responseCode(ResponseCode.OK); // set/update is always possible (with valid input)
+        builder.responseCode(ResponseCode.OK);
+        builder.data(null);
 
         final JsonElement item = database.get(keys[0]);
         if (item == null) {
-            log.fine("insert:\nitem does not exist in database, will enter it:\n" + newValue);
+            log.fine("insert:\n" +
+                    "item does not exist in database, will enter it:\n" +
+                    newValue);
             database.put(keys[0], newValue);
-            builder.data(null);
+        } else if (keys.length == 1) {
+            log.fine("update:\n" +
+                    "item exists in the DB:\n" +
+                    item + "\n" +
+                    "we're updating the root element to:\n" +
+                    newValue);
+            database.put(keys[0], newValue);
         } else if (item instanceof JsonObject jsonObject) {
             final var searchResult = filterDataForSecondaryKeys(jsonObject, keys);
             if (searchResult.parentElement() instanceof JsonObject parentElement) {
-                log.fine("update:\n" + item + "\nexists in database, will update it to:\n" + newValue);
+                log.fine("update:\n" +
+                        "item exists in the DB:\n" +
+                        item + "\n" +
+                        "we have found a secondary key and we will update it to:\n" +
+                        newValue);
                 parentElement.add(searchResult.key(), newValue);
             } else {
                 log.info("update:\nno parent, root element (value), updating to:\n" + newValue);
                 jsonObject.add("value", newValue);
             }
         } else {
-            // cannot be traversed
-            if (keys.length == 1) {
-                log.fine("update:\n" + item + "\nexists in the DB, it is the root key, updating to:\n" + newValue);
-                database.put(keys[0], newValue);
-            } else {
-                builder.responseCode(ResponseCode.ERROR_NO_DATA);
-            }
+            builder.responseCode(ResponseCode.ERROR_NO_DATA);
         }
         log.fine("after update:\nDB state for\nkey: " + keys[0] + "\nvalue: " + database.get(keys[0]));
 
