@@ -15,14 +15,9 @@ public class DatabaseGsonDeserializer implements JsonDeserializer<Database> {
         JsonElement jsonDatabaseCapacity = jsonObject.get("capacity");
         JsonElement jsonDatabaseDatabase = jsonObject.get("database");
 
-
-
-
         final var capacity = jsonDatabaseCapacity == null ? 1000 : jsonDatabaseCapacity.getAsInt();
 
         Type mapOfJsonObjects = new TypeToken<HashMap<String, JsonObject>>(){}.getType();
-
-
 
         final HashMap<String, JsonElement> database = jsonDatabaseDatabase == null ?
                 new HashMap<>(capacity) : context.deserialize(jsonDatabaseDatabase, mapOfJsonObjects);

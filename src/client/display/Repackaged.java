@@ -31,7 +31,6 @@ public class Repackaged {
     }
 
     public String getJson() {
-        System.out.println("Value: " + value);
         return gson.toJson(this);
     }
 }

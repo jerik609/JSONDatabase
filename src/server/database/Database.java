@@ -33,6 +33,14 @@ public class Database {
         return database.size() + 1 > capacity;
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public HashMap<String, JsonElement> getDatabase() {
+        return database;
+    }
+
     private record SearchResult(String key, JsonElement parentElement, JsonElement element) {}
 
     private static SearchResult filterDataForSecondaryKeys(JsonObject item, String[] keys) {
