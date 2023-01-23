@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 import static common.Message.MESSAGE_TYPE_FIELD;
-import static server.interfaces.common.Action.TYPE_KEY_VALUE;
 
 /**
  * Async.

@@ -83,4 +83,12 @@ public class Message {
     public String getFooPrint() {
         return "{\"type\":\"" + type + "\"," + payload.substring(1);
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "type='" + type + '\'' +
+                ", payload='" + payload + '\'' +
+                '}';
+    }
 }
