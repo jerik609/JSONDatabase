@@ -23,13 +23,13 @@ public class Persistence {
         final var gsonBuilder = new GsonBuilder();
         return gsonBuilder
                 .registerTypeAdapter(Database.class, new DatabaseGsonDeserializer())
-                .registerTypeAdapter(Database.class, new DatabaseGsonSerializer())
+                //.registerTypeAdapter(Database.class, new DatabaseGsonSerializer())
                 .excludeFieldsWithoutExposeAnnotation();
     }
 
     public static void persistDatabase(Database database) {
         final var serializedDb = gson.toJson(database);
-        final var filePath = Paths.get(FILENAME_TEST_ENVIRONMENT);
+        final var filePath = Paths.get(THE_LOCATION);
 
 //        try {
 //            Files.createDirectories(Paths.get(DATABASE_DIR));

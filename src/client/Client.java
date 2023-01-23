@@ -23,13 +23,13 @@ public class Client {
     private final Scanner scanner = new Scanner(System.in);
 
     @Parameter(names={"--type", "-t"})
-    String type;
+    String type = "";
     @Parameter(names={"--key", "-k"})
-    String key;
+    String key = "";
     @Parameter(names={"--value", "-v"})
-    String value;
+    String value = "";
     @Parameter(names={"--input_file", "-in"})
-    String filePath;
+    String filePath = "";
 
     public void runWithParams() {
         run(true);
@@ -51,7 +51,9 @@ public class Client {
         jsonObject.add("type", new JsonPrimitive(type));
         jsonObject.add("key", new JsonPrimitive(key));
         jsonObject.add("value", new JsonPrimitive(value));
-        return gson.toJson(jsonObject);
+        final var jsonStr = gson.toJson(jsonObject);
+        System.out.println("Sent: " + jsonStr);
+        return jsonStr;
     }
 
     private static void sendRequest(DataOutputStream outputStream, Message request) throws IOException {
