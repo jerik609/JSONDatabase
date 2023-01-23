@@ -1,6 +1,6 @@
 package common.response;
 
-import client.display.Repackaged;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 public class OkRemoteResponse implements RemoteResponse {
@@ -13,7 +13,7 @@ public class OkRemoteResponse implements RemoteResponse {
     }
 
     @Override
-    public Repackaged repackage() {
-        return new Repackaged("OK", null, null);
+    public JsonObject getAsJsonObject() {
+        return null;
     }
 }

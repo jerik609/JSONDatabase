@@ -1,6 +1,7 @@
 package common.response;
 
-import client.display.Repackaged;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 public class DataRemoteResponse implements RemoteResponse {
@@ -20,14 +21,21 @@ public class DataRemoteResponse implements RemoteResponse {
     }
 
     @Override
+    public JsonObject getAsJsonObject() {
+        final var gson = new GsonBuilder().setPrettyPrinting().create();
+
+
+
+        System.out.println(value);
+        final var jsonObject = gson.fromJson(value, JsonObject.class);
+        System.out.println("xxx:" + gson.toJson(jsonObject));
+        return jsonObject;
+    }
+
+    @Override
     public String toString() {
         return "DataRemoteResponse{" +
                 "value='" + value + '\'' +
                 '}';
-    }
-
-    @Override
-    public Repackaged repackage() {
-        return new Repackaged("OK", value, null);
     }
 }

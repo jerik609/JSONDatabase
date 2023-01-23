@@ -18,7 +18,7 @@ public class Client {
 
     private static final String FILE_REQUEST_PATH_TEST_ENVIRONMENT = System.getProperty("user.dir") + "/src/client/data/";
     private static final String FILE_REQUEST_PATH_LOCAL_ENVIRONMENT = System.getProperty("user.dir") + "/JSON Database/task/src/client/data/";
-    private static final String THE_LOCATION = FILE_REQUEST_PATH_TEST_ENVIRONMENT;
+    private static final String THE_LOCATION = FILE_REQUEST_PATH_LOCAL_ENVIRONMENT;
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -96,7 +96,18 @@ public class Client {
                     final var responseStr = inputStream.readUTF();
                     final var msgResp = Message.fromJson(responseStr);
                     final var remoteResponse = msgResp.getResponse();
-                    System.out.println("Received: " + remoteResponse.repackage().getJson().replace("\\\"",""));
+
+                    System.out.println("XXXXXXXXXXXXXXXXXXXXX" + remoteResponse.getAsJsonObject());
+
+//                    System.out.println("Received: " + remoteResponse
+//                            .getJson(new GsonBuilder())
+//
+////                                    remoteResponse.getResponseType().equals("ok_data") && Message.getKeyAsArrays(new GsonBuilder().create().fromJson(msgReq.getPayload(), JsonObject.class)).length == 1 ?
+////                                            new GsonBuilder().create() : new GsonBuilder().setPrettyPrinting().create())
+//                            .replace("\\", "")
+//                            .replaceAll("\"+", "\"")
+//                            .replaceAll("\"\\{", "{")
+//                            .replaceAll("}\"", "}"));
                 }
 
                 // if with params, stop immediately (???)

@@ -1,8 +1,8 @@
 package common.response;
 
-import client.display.Repackaged;
+import com.google.gson.JsonObject;
 
 public interface RemoteResponse {
     String getResponseType();
-    Repackaged repackage();
+    JsonObject getAsJsonObject();
 }

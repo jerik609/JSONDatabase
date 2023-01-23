@@ -2,18 +2,12 @@ package common;
 
 import com.google.gson.*;
 import com.google.gson.annotations.Expose;
-import common.request.*;
 import common.response.DataRemoteResponse;
 import common.response.ErrorRemoteResponse;
 import common.response.OkRemoteResponse;
 import common.response.RemoteResponse;
-import server.interfaces.common.Action;
-import server.interfaces.remote.commands.RemoteGetCommand;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Spliterators;
-import java.util.stream.Stream;
 
 public class Message {
     public static final String MESSAGE_TYPE_FIELD = "type";
