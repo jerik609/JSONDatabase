@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import static common.Message.MESSAGE_KEY_FIELD;
+import static common.Message.getKeyAsArrays;
 
 public class RemoteSetCommand implements Command {
     private static final Logger log = Logger.getLogger(RemoteSetCommand.class.getSimpleName());
@@ -34,15 +35,12 @@ public class RemoteSetCommand implements Command {
 
     @Override
     public void execute() {
-        log.fine("Executing command for " + payload);
+        final var keys = getKeyAsArrays(payload);
 
-        final var key = payload.getAsJsonPrimitive(MESSAGE_KEY_FIELD);
-        if (key == null) {
-            throw new RuntimeException("Payload does not contain a key: " + payload);
-        }
+        log.fine("Executing command for: " + payload + ", using keys: " + Arrays.toString(keys));
 
-        //TODO: first try to get from the DB, to check for modification - traverse, modify and then insert modified
-        final var result = database.set(key.getAsString(), payload);
+        final var result = database.set(keys, payload.get("value"));
+
         if (result.getResponseCode() == ResponseCode.OK) {
             log.fine("Success for: " + payload);
             exchange.pushResponse(new Response(sessionId, new OkRemoteResponse()));

@@ -24,7 +24,7 @@ public class DatabaseGsonDeserializer implements JsonDeserializer<Database> {
 
 
 
-        final HashMap<String, JsonObject> database = jsonDatabaseDatabase == null ?
+        final HashMap<String, JsonElement> database = jsonDatabaseDatabase == null ?
                 new HashMap<>(capacity) : context.deserialize(jsonDatabaseDatabase, mapOfJsonObjects);
 
         return new Database(capacity, database);

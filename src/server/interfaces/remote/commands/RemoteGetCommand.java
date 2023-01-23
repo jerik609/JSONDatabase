@@ -38,14 +38,11 @@ public class RemoteGetCommand implements Command {
 
     @Override
     public void execute() {
-        log.fine("Executing command for " + payload);
-
         final var keys = getKeyAsArrays(payload);
-        log.fine("Using keys: " + Arrays.toString(keys));
+
+        log.fine("Executing command for: " + payload + ", using keys: " + Arrays.toString(keys));
 
         final var result = database.get(keys);
-
-        //TODO: traverse when key is complex
 
         if (result.getResponseCode() == ResponseCode.OK) {
             log.fine("Success for: " + payload);

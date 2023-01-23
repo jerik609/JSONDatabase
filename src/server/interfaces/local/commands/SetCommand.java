@@ -29,7 +29,7 @@ public class SetCommand implements Command {
         final var index = params[0];
         final var jsonObject = gson.fromJson(params[1], JsonObject.class);
         log.fine("Local command: " + index + ", " + jsonObject);
-        final var result = database.set(index, jsonObject);
+        final var result = database.set(new String[]{index}, jsonObject);
         if (result.getResponseCode() == ResponseCode.OK) {
             System.out.println("OK");
         } else {
