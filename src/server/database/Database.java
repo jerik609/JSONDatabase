@@ -53,7 +53,7 @@ public class Database {
         String elementKey = "";
         JsonElement element = value;
         for (var key : secondaryKeys) {
-            log.info("processing secondary key: " + key);
+            log.fine("processing secondary key: " + key);
             elementKey = key;
             if (element instanceof JsonObject node) {
                 element = node.get(key);

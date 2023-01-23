@@ -19,7 +19,7 @@ public class Client {
 
     private static final String FILE_REQUEST_PATH_TEST_ENVIRONMENT = System.getProperty("user.dir") + "/src/client/data/";
     private static final String FILE_REQUEST_PATH_LOCAL_ENVIRONMENT = System.getProperty("user.dir") + "/JSON Database/task/src/client/data/";
-    private static final String THE_LOCATION = FILE_REQUEST_PATH_LOCAL_ENVIRONMENT;
+    private static final String THE_LOCATION = FILE_REQUEST_PATH_TEST_ENVIRONMENT;
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -42,9 +42,16 @@ public class Client {
     private static String buildJsonRequestFromFile(String filePath) throws IOException {
         final var jsonStr = Files.readString(Paths.get(THE_LOCATION + filePath));
         // read into json to validate
-        System.out.println("Sent: " + jsonStr);
         final var jsonObject = gson.fromJson(jsonStr, JsonObject.class);
+        System.out.print("Sent: " + jsonStr);
         return gson.toJson(jsonObject);
+//        if (//json instanceof JsonObject jsonObject &&
+//                json.get("value") != null &&
+//                        !json.get("value").isJsonPrimitive()) {
+//            System.out.println("Sent:\n" + prettyGson.toJson(json));
+//        } else {
+//            System.out.println("Sent: " + gson.toJson(json));
+//        }
     }
 
     private static String buildJsonRequestFromParams(String type, String key, String value) {
@@ -103,8 +110,9 @@ public class Client {
                             !jsonObject.get("value").isJsonPrimitive()) {
                         System.out.println("Received:\n" + prettyGson.toJson(response));
                     } else {
-                        System.out.println("Received:\n" + gson.toJson(response));
+                        System.out.println("Received: " + gson.toJson(response));
                     }
+                    System.out.println();
                 }
 
                 // if with params, stop immediately (???)
