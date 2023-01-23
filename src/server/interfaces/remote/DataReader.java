@@ -45,8 +45,6 @@ public class DataReader implements Runnable {
     public ForkJoinTask<?> start() {
         if (!stop.get() && !isRunning.get()) {
             log.fine("Starting.");
-//            var thread = new Thread(this);
-//            thread.start();
             return pool.submit(this);
         } else {
             log.fine("Cannot start.");
