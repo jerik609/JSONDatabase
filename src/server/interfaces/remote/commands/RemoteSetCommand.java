@@ -39,7 +39,7 @@ public class RemoteSetCommand implements Command {
 
         log.fine("Executing command for: " + payload + ", using keys: " + Arrays.toString(keys));
 
-        final var result = database.set(keys, payload.get("value"));
+        final var result = database.set(keys, payload);
 
         if (result.getResponseCode() == ResponseCode.OK) {
             log.fine("Success for: " + payload);

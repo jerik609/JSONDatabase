@@ -89,10 +89,10 @@ public class Database {
     /**
      * Set
      * @param keys
-     * @param newValue
+     * @param payload
      * @return
      */
-    public DatabaseResult<JsonObject> set(String[] keys, JsonElement newValue) {
+    public DatabaseResult<JsonObject> set(String[] keys, JsonObject payload) {
         var builder = new DatabaseResult.Builder<JsonObject>();
 
         if (isOutOfBounds(keys[0])) {
@@ -107,15 +107,15 @@ public class Database {
         if (item == null) {
             log.fine("insert:\n" +
                     "item does not exist in database, will enter it:\n" +
-                    newValue);
-            database.put(keys[0], newValue);
+                    payload);
+            database.put(keys[0], payload);
         } else if (keys.length == 1) {
             log.fine("update:\n" +
                     "item exists in the DB:\n" +
                     item + "\n" +
                     "we're updating the root element to:\n" +
-                    newValue);
-            database.put(keys[0], newValue);
+                    payload);
+            database.put(keys[0], payload);
         } else if (item instanceof JsonObject jsonObject) {
             final var searchResult = filterDataForSecondaryKeys(jsonObject, keys);
             if (searchResult.parentElement() instanceof JsonObject parentElement) {
@@ -123,11 +123,11 @@ public class Database {
                         "item exists in the DB:\n" +
                         item + "\n" +
                         "we have found a secondary key and we will update it to:\n" +
-                        newValue);
-                parentElement.add(searchResult.key(), newValue);
+                        payload);
+                parentElement.add(searchResult.key(), payload.get("value"));
             } else {
-                log.info("update:\nno parent, root element (value), updating to:\n" + newValue);
-                jsonObject.add("value", newValue);
+                log.info("update:\nno parent, root element (value), updating to:\n" + payload);
+                jsonObject.add("value", payload.get("value"));
             }
         } else {
             builder.responseCode(ResponseCode.ERROR_NO_DATA);
