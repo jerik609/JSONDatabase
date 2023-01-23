@@ -1,17 +1,7 @@
 package server.interfaces.remote;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import common.Message;
-import common.request.DeleteRemoteRequest;
-import common.request.ExitRemoteRequest;
-import common.request.RemoteRequest;
-import common.request.SetRemoteRequest;
-import server.interfaces.Command;
 import server.interfaces.Exchange;
-import server.interfaces.common.Action;
-import server.interfaces.remote.commands.RemoteGetCommand;
 import server.interfaces.remote.data.Request;
 
 import java.io.IOException;

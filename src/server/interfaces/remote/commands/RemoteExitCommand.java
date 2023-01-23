@@ -1,9 +1,10 @@
 package server.interfaces.remote.commands;
 
-import common.response.OkRemoteResponse;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import server.interfaces.Command;
 import server.interfaces.Exchange;
-import server.interfaces.remote.data.Response;
+import common.response.Response;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
@@ -24,7 +25,11 @@ public class RemoteExitCommand implements Command {
     @Override
     public void execute() {
         log.fine("Executing command");
-        exchange.pushResponse(new Response(sessionId, new OkRemoteResponse()));
+
+        final var responseJsonObj = new JsonObject();
+        responseJsonObj.add("response", new JsonPrimitive("OK"));
+        exchange.pushResponse(new Response(sessionId, responseJsonObj));
+
         stop.getAndSet(true);
         log.fine("Done executing command");
     }

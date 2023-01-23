@@ -2,10 +2,7 @@ package common;
 
 import com.google.gson.*;
 import com.google.gson.annotations.Expose;
-import common.response.DataRemoteResponse;
-import common.response.ErrorRemoteResponse;
-import common.response.OkRemoteResponse;
-import common.response.RemoteResponse;
+import common.response.Response;
 
 import java.util.ArrayList;
 
@@ -25,24 +22,14 @@ public class Message {
     }
 
     @Expose
-    private final String type;
-    @Expose
     private final String payload;
 
     public Message(String payload) {
-        this.type = "";
         this.payload = payload;
     }
 
-//    public Message(String requestType, String key, String value) {
-//        final var request = buildRequest(requestType, key, value);
-//        this.type = request.getRequestType();
-//        this.payload = gson.toJson(request);
-//    }
-
-    public Message(RemoteResponse response) {
-        this.type = response.getResponseType();
-        this.payload = gson.toJson(response);
+    public Message(Response response) {
+        this.payload = gson.toJson(response.payload());
     }
 
     public static Message fromJson(String jsonStr) {
@@ -77,13 +64,8 @@ public class Message {
         }
     }
 
-    public RemoteResponse getResponse() {
-        return switch (type) {
-            case OkRemoteResponse.type -> gson.fromJson(payload, OkRemoteResponse.class);
-            case DataRemoteResponse.type -> gson.fromJson(payload, DataRemoteResponse.class);
-            case ErrorRemoteResponse.type -> gson.fromJson(payload, ErrorRemoteResponse.class);
-            default -> throw new RuntimeException("Unknown remote response type: " + type);
-        };
+    public JsonElement getResponse() {
+        return gson.fromJson(payload, JsonElement.class);
     }
 
     public String getWireFormat() {
@@ -94,15 +76,10 @@ public class Message {
         return payload;
     }
 
-    public String getFooPrint() {
-        return "{\"type\":\"" + type + "\"," + payload.substring(1);
-    }
-
     @Override
     public String toString() {
         return "Message{" +
-                "type='" + type + '\'' +
-                ", payload='" + payload + '\'' +
+                "payload='" + payload + '\'' +
                 '}';
     }
 }

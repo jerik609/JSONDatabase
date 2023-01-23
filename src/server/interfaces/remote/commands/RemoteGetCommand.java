@@ -2,15 +2,13 @@ package server.interfaces.remote.commands;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import common.response.DataRemoteResponse;
-import common.response.ErrorRemoteResponse;
+import com.google.gson.JsonPrimitive;
 import server.database.Database;
 import server.database.ResponseCode;
 import server.interfaces.Command;
 import server.interfaces.Exchange;
-import server.interfaces.remote.data.Response;
+import common.response.Response;
 
 import java.util.Arrays;
 import java.util.logging.Logger;
@@ -34,8 +32,6 @@ public class RemoteGetCommand implements Command {
         this.payload = payload;
     }
 
-
-
     @Override
     public void execute() {
         final var keys = getKeyAsArrays(payload);
@@ -44,14 +40,18 @@ public class RemoteGetCommand implements Command {
 
         final var result = database.get(keys);
 
+        final var responseJsonObj = new JsonObject();
         if (result.getResponseCode() == ResponseCode.OK) {
             log.fine("Success for: " + payload);
-            exchange.pushResponse(
-                    new Response(sessionId, new DataRemoteResponse(result.getData().map(gson::toJson).orElseThrow(
-                                    () -> new RuntimeException("Database query was successful, but returned no data.")))));
+            responseJsonObj.add("response", new JsonPrimitive("OK"));
+            responseJsonObj.add("value", result.getData().orElseThrow(
+                    () -> new RuntimeException("Database query was successful, but returned no data.")));
+            exchange.pushResponse(new Response(sessionId, responseJsonObj));
         } else {
-            log.fine("Failed for: " + payload);
-            exchange.pushResponse(new Response(sessionId, new ErrorRemoteResponse("No such key")));
+            log.fine("failed for: " + payload);
+            responseJsonObj.add("response", new JsonPrimitive("ERROR"));
+            responseJsonObj.add("reason", new JsonPrimitive("No such key"));
+            exchange.pushResponse(new Response(sessionId, responseJsonObj));
         }
         log.fine("Pushed response for result: " + result);
     }

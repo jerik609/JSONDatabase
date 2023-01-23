@@ -1,20 +1,16 @@
 package server.interfaces.remote.commands;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import common.response.ErrorRemoteResponse;
-import common.response.OkRemoteResponse;
+import com.google.gson.JsonPrimitive;
 import server.database.Database;
 import server.database.ResponseCode;
 import server.interfaces.Command;
 import server.interfaces.Exchange;
-import server.interfaces.remote.data.Response;
+import common.response.Response;
 
 import java.util.Arrays;
 import java.util.logging.Logger;
 
-import static common.Message.MESSAGE_KEY_FIELD;
 import static common.Message.getKeyAsArrays;
 
 public class RemoteSetCommand implements Command {
@@ -41,13 +37,18 @@ public class RemoteSetCommand implements Command {
 
         final var result = database.set(keys, payload);
 
+        final var responseJsonObj = new JsonObject();
         if (result.getResponseCode() == ResponseCode.OK) {
             log.fine("Success for: " + payload);
-            exchange.pushResponse(new Response(sessionId, new OkRemoteResponse()));
+            responseJsonObj.add("response", new JsonPrimitive("OK"));
+            exchange.pushResponse(new Response(sessionId, responseJsonObj));
         } else {
-            log.fine("Failed for: " + payload);
-            exchange.pushResponse(new Response(sessionId, new ErrorRemoteResponse("No such key")));
+            log.fine("failed for: " + payload);
+            responseJsonObj.add("response", new JsonPrimitive("ERROR"));
+            responseJsonObj.add("reason", new JsonPrimitive("No such key"));
+            exchange.pushResponse(new Response(sessionId, responseJsonObj));
         }
+
         log.fine("Pushed response for result: " + result);
     }
 }

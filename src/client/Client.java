@@ -13,6 +13,7 @@ import java.util.Scanner;
 
 public class Client {
     private static final Gson gson = new GsonBuilder().create();
+    private static final Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
     private static final String SERVER_ADDRESS = "127.0.0.1";
     private static final int SERVER_PORT = 34567;
 
@@ -94,20 +95,16 @@ public class Client {
 
                     // receive response
                     final var responseStr = inputStream.readUTF();
-                    final var msgResp = Message.fromJson(responseStr);
-                    final var remoteResponse = msgResp.getResponse();
+                    final var message = Message.fromJson(responseStr);
+                    final var response = message.getResponse();
 
-                    System.out.println("XXXXXXXXXXXXXXXXXXXXX" + remoteResponse.getAsJsonObject());
-
-//                    System.out.println("Received: " + remoteResponse
-//                            .getJson(new GsonBuilder())
-//
-////                                    remoteResponse.getResponseType().equals("ok_data") && Message.getKeyAsArrays(new GsonBuilder().create().fromJson(msgReq.getPayload(), JsonObject.class)).length == 1 ?
-////                                            new GsonBuilder().create() : new GsonBuilder().setPrettyPrinting().create())
-//                            .replace("\\", "")
-//                            .replaceAll("\"+", "\"")
-//                            .replaceAll("\"\\{", "{")
-//                            .replaceAll("}\"", "}"));
+                    if (response instanceof JsonObject jsonObject &&
+                            jsonObject.get("value") != null &&
+                            !jsonObject.get("value").isJsonPrimitive()) {
+                        System.out.println("Received:\n" + prettyGson.toJson(response));
+                    } else {
+                        System.out.println("Received:\n" + gson.toJson(response));
+                    }
                 }
 
                 // if with params, stop immediately (???)
