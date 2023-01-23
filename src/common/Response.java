@@ -1,4 +1,4 @@
-package common.response;
+package common;
 
 import com.google.gson.JsonElement;
 

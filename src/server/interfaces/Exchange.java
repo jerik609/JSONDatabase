@@ -1,8 +1,8 @@
 package server.interfaces;
 
 import server.interfaces.remote.Session;
-import server.interfaces.remote.data.Request;
-import common.response.Response;
+import common.Request;
+import common.Response;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;

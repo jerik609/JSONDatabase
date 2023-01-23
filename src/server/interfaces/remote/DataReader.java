@@ -2,7 +2,7 @@ package server.interfaces.remote;
 
 import common.Message;
 import server.interfaces.Exchange;
-import server.interfaces.remote.data.Request;
+import common.Request;
 
 import java.io.IOException;
 import java.util.concurrent.ForkJoinPool;

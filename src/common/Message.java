@@ -2,7 +2,6 @@ package common;
 
 import com.google.gson.*;
 import com.google.gson.annotations.Expose;
-import common.response.Response;
 
 import java.util.ArrayList;
 

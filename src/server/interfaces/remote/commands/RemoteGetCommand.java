@@ -8,7 +8,7 @@ import server.database.Database;
 import server.database.ResponseCode;
 import server.interfaces.Command;
 import server.interfaces.Exchange;
-import common.response.Response;
+import common.Response;
 
 import java.util.Arrays;
 import java.util.logging.Logger;

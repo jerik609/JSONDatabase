@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import server.interfaces.Command;
 import server.interfaces.Exchange;
-import common.response.Response;
+import common.Response;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
