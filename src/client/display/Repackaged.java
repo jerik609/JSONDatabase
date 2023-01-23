@@ -10,7 +10,9 @@ public class Repackaged {
 
     private static Gson buildGson() {
         final var gsonBuilder = new GsonBuilder();
-        return gsonBuilder.create();
+        return gsonBuilder
+                .disableHtmlEscaping()
+                .create();
     }
 
     @Expose
@@ -29,6 +31,7 @@ public class Repackaged {
     }
 
     public String getJson() {
+        System.out.println("Value: " + value);
         return gson.toJson(this);
     }
 }

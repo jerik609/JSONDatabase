@@ -59,7 +59,9 @@ public class DataSender implements Runnable {
                     try {
                         log.fine("[" + session.getSessionId() + "]: Response to send: " + response.payload());
                         final var msg = new Message(response.payload());
-                        outputStream.writeUTF(msg.getWireFormat());
+                        final var wireFormat = msg.getWireFormat();
+                        log.fine("wire format: " + wireFormat);
+                        outputStream.writeUTF(wireFormat);
                     } catch (IOException e) {
                         log.warning("Failed to send response to client: " + e);
                         e.printStackTrace();
