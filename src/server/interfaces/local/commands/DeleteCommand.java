@@ -16,7 +16,7 @@ public class DeleteCommand implements Command {
     @Override
     public void execute() {
         final var index = commandParams;
-        final var result = database.delete(index);
+        final var result = database.delete(new String[]{index});
         if (result.getResponseCode() == ResponseCode.OK) {
             System.out.println("OK");
         } else {
