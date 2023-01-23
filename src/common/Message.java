@@ -2,14 +2,20 @@ package common;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import common.request.*;
 import common.response.DataRemoteResponse;
 import common.response.ErrorRemoteResponse;
 import common.response.OkRemoteResponse;
 import common.response.RemoteResponse;
+import server.interfaces.common.Action;
+import server.interfaces.remote.commands.RemoteGetCommand;
 
 public class Message {
+    public static final String MESSAGE_TYPE_FIELD = "type";
+    public static final String MESSAGE_KEY_FIELD = "key";
+    public static final String MESSAGE_VALUE_FIELD = "value";
 
     private static final Gson gson = gsonProvider();
 
@@ -42,7 +48,7 @@ public class Message {
         this.payload = gson.toJson(response);
     }
 
-    public static Message jsonToMessage(String jsonStr) {
+    public static Message fromJson(String jsonStr) {
         return gson.fromJson(jsonStr, Message.class);
     }
 
@@ -56,15 +62,6 @@ public class Message {
 //        };
 //    }
 
-    public RemoteRequest getRequest() {
-        return switch (type) {
-            case GetRemoteRequest.type -> gson.fromJson(payload, GetRemoteRequest.class);
-            case SetRemoteRequest.type -> gson.fromJson(payload, SetRemoteRequest.class);
-            case DeleteRemoteRequest.type -> gson.fromJson(payload, DeleteRemoteRequest.class);
-            case ExitRemoteRequest.type -> gson.fromJson(payload, ExitRemoteRequest.class);
-            default -> throw new RuntimeException("Unknown remote request type: " + type);
-        };
-    }
 
     public RemoteResponse getResponse() {
         return switch (type) {
@@ -77,6 +74,10 @@ public class Message {
 
     public String getWireFormat() {
         return gson.toJson(this);
+    }
+
+    public String getPayload() {
+        return payload;
     }
 
     public String getFooPrint() {

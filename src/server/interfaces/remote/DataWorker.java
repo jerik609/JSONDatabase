@@ -1,14 +1,20 @@
 package server.interfaces.remote;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import server.interfaces.Command;
 import server.interfaces.Exchange;
 import server.interfaces.Executor;
 import server.interfaces.common.Action;
-import server.interfaces.common.Utils;
 
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
+
+import static common.Message.MESSAGE_TYPE_FIELD;
+import static server.interfaces.common.Action.TYPE_KEY_VALUE;
 
 /**
  * Async.
@@ -16,6 +22,8 @@ import java.util.logging.Logger;
  */
 public class DataWorker implements Runnable {
     private static final Logger log = Logger.getLogger(DataWorker.class.getSimpleName());
+
+    private static final Gson gson = new GsonBuilder().create();
 
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
@@ -36,8 +44,6 @@ public class DataWorker implements Runnable {
     public ForkJoinTask<?> start() {
         if (!stop.get() && !isRunning.get()) {
             log.fine("Starting.");
-//            var thread = new Thread(this);
-//            thread.start();
             return pool.submit(this);
         } else {
             log.fine("Cannot start.");
@@ -63,13 +69,22 @@ public class DataWorker implements Runnable {
             exchange.takeRequest().ifPresent(
                 request -> {
                     log.fine("Working on request: " + request);
-                    executor.acceptCommand(remoteCommandFactory.getRemoteCommandFromRequest(
-                            request.sessionId(),
-                            Action.from(request.payload().getRequestType()),
-                            request.payload().getCommand()));
+                    executor.acceptCommand(getCommandFromRequest(request.sessionId(), request.message().getPayload()));
                     executor.run();
                 });
         }
         log.fine("Stopped.");
+    }
+
+    private Command getCommandFromRequest(String sessionId, String payload) {
+        final var jsonObject = gson.fromJson(payload, JsonObject.class);
+        final var type = jsonObject.getAsJsonPrimitive(MESSAGE_TYPE_FIELD);
+        if (type == null) {
+            throw new RuntimeException("Invalid message, no type was specified: " + jsonObject);
+        }
+        return remoteCommandFactory.getRemoteCommandFromRequest(
+                sessionId,
+                Action.from(type.getAsString()),
+                jsonObject);
     }
 }

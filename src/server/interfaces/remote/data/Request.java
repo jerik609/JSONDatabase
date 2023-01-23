@@ -1,6 +1,6 @@
 package server.interfaces.remote.data;
 
-import common.request.RemoteRequest;
+import common.Message;
 
-public record Request(String sessionId, RemoteRequest payload) {
+public record Request(String sessionId, Message message) {
 }

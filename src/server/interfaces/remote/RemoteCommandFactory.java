@@ -1,5 +1,6 @@
 package server.interfaces.remote;
 
+import com.google.gson.JsonObject;
 import server.database.Database;
 import server.interfaces.Command;
 import server.interfaces.Exchange;
@@ -23,11 +24,11 @@ public class RemoteCommandFactory {
         this.exchange = exchange;
     }
 
-    public Command getRemoteCommandFromRequest(String sessionId, Action action, String[] commandParams) {
+    public Command getRemoteCommandFromRequest(String sessionId, Action action, JsonObject payload) {
         return switch (action) {
-            case SET -> new RemoteSetCommand(database, exchange, sessionId, commandParams);
-            case GET -> new RemoteGetCommand(database, exchange, sessionId, commandParams);
-            case DELETE -> new RemoteDeleteCommand(database, exchange, sessionId, commandParams);
+            case SET -> new RemoteSetCommand(database, exchange, sessionId, payload);
+            case GET -> new RemoteGetCommand(database, exchange, sessionId, payload);
+            case DELETE -> new RemoteDeleteCommand(database, exchange, sessionId, payload);
             case EXIT -> new RemoteExitCommand(stop, exchange, sessionId);
             default -> new UnknownCommand();
         };

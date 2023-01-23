@@ -1,8 +1,17 @@
 package server.interfaces.remote;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import common.Message;
+import common.request.DeleteRemoteRequest;
+import common.request.ExitRemoteRequest;
 import common.request.RemoteRequest;
+import common.request.SetRemoteRequest;
+import server.interfaces.Command;
 import server.interfaces.Exchange;
+import server.interfaces.common.Action;
+import server.interfaces.remote.commands.RemoteGetCommand;
 import server.interfaces.remote.data.Request;
 
 import java.io.IOException;
@@ -64,11 +73,8 @@ public class DataReader implements Runnable {
                     if (inputStream.available() > 0) {
                         final var input = inputStream.readUTF();
                         log.fine("[" + session.getSessionId() + "]: raw input: " + input);
-                        final var message = Message.jsonToMessage(input);
-                        final var remoteRequest = message.getRequest();
-                        final var request = new Request(session.getSessionId(), remoteRequest);
                         // enqueue request for processing
-                        exchange.pushRequest(request);
+                        exchange.pushRequest(new Request(session.getSessionId(), Message.fromJson(input)));
                     }
                 } catch (IOException e) {
                     log.warning("Failed to read from input stream: " + e);

@@ -92,12 +92,12 @@ public class Client {
 
                     // receive response
                     final var responseStr = inputStream.readUTF();
-                    final var msgResp = Message.jsonToMessage(responseStr);
+                    final var msgResp = Message.fromJson(responseStr);
                     final var remoteResponse = msgResp.getResponse();
                     System.out.println("Received: " + remoteResponse.repackage().getJson());
                 }
 
-                // if with params, stop immediately
+                // if with params, stop immediately (???)
                 if (withParams) {
                     type = "DONE";
                 }

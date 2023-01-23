@@ -2,6 +2,7 @@ package server.interfaces.remote.commands;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import common.response.DataRemoteResponse;
 import common.response.ErrorRemoteResponse;
 import server.database.Database;
@@ -13,6 +14,8 @@ import server.interfaces.remote.data.Response;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
+import static common.Message.MESSAGE_KEY_FIELD;
+
 public class RemoteGetCommand implements Command {
     private static final Logger log = Logger.getLogger(RemoteGetCommand.class.getSimpleName());
 
@@ -21,27 +24,33 @@ public class RemoteGetCommand implements Command {
     private final Database database;
     private final Exchange exchange;
     private final String sessionId;
-    private final String[] commandParams;
+    private final JsonObject payload;
 
-    public RemoteGetCommand(Database database, Exchange exchange, String sessionId, String[] commandParams) {
+    public RemoteGetCommand(Database database, Exchange exchange, String sessionId, JsonObject payload) {
         this.database = database;
         this.exchange = exchange;
         this.sessionId = sessionId;
-        this.commandParams = commandParams;
+        this.payload = payload;
     }
 
     @Override
     public void execute() {
-        log.fine("Executing command for " + Arrays.toString(commandParams));
-        final var index = commandParams[0];
-        final var result = database.get(index);
+        log.fine("Executing command for " + payload);
+
+        final var key = payload.getAsJsonPrimitive(MESSAGE_KEY_FIELD);
+        if (key == null) {
+            throw new RuntimeException("Payload does not contain a key: " + payload);
+        }
+
+        //TODO: traverse when key is complex
+        final var result = database.get(key.getAsString());
         if (result.getResponseCode() == ResponseCode.OK) {
-            log.fine("Success for: " + Arrays.toString(commandParams));
+            log.fine("Success for: " + payload);
             exchange.pushResponse(
                     new Response(sessionId, new DataRemoteResponse(result.getData().map(gson::toJson).orElseThrow(
                                     () -> new RuntimeException("Database query was successful, but returned no data.")))));
         } else {
-            log.fine("Failed for: " + Arrays.toString(commandParams));
+            log.fine("Failed for: " + payload);
             exchange.pushResponse(new Response(sessionId, new ErrorRemoteResponse("No such key")));
         }
         log.fine("Pushed response for result: " + result);
