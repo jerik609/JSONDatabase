@@ -1,6 +1,6 @@
 package common.response;
 
-import client.Repackaged;
+import client.display.Repackaged;
 import com.google.gson.annotations.Expose;
 
 public class DataRemoteResponse implements RemoteResponse {

@@ -26,11 +26,16 @@ public class Message {
     @Expose
     private final String payload;
 
-    public Message(String requestType, String key, String value) {
-        final var request = buildRequest(requestType, key, value);
-        this.type = request.getRequestType();
-        this.payload = gson.toJson(request);
+    public Message(String payload) {
+        this.type = "";
+        this.payload = payload;
     }
+
+//    public Message(String requestType, String key, String value) {
+//        final var request = buildRequest(requestType, key, value);
+//        this.type = request.getRequestType();
+//        this.payload = gson.toJson(request);
+//    }
 
     public Message(RemoteResponse response) {
         this.type = response.getResponseType();
@@ -41,15 +46,15 @@ public class Message {
         return gson.fromJson(jsonStr, Message.class);
     }
 
-    private static RemoteRequest buildRequest(String requestType, String key, String value) {
-        return switch (requestType) {
-            case GetRemoteRequest.type -> new GetRemoteRequest(key);
-            case SetRemoteRequest.type -> new SetRemoteRequest(key, value);
-            case DeleteRemoteRequest.type -> new DeleteRemoteRequest(key);
-            case ExitRemoteRequest.type -> new ExitRemoteRequest();
-            default -> throw new RuntimeException("Unknown request type: " + requestType);
-        };
-    }
+//    private static RemoteRequest buildRequest(String requestType, String key, String value) {
+//        return switch (requestType) {
+//            case GetRemoteRequest.type -> new GetRemoteRequest(key);
+//            case SetRemoteRequest.type -> new SetRemoteRequest(key, value);
+//            case DeleteRemoteRequest.type -> new DeleteRemoteRequest(key);
+//            case ExitRemoteRequest.type -> new ExitRemoteRequest();
+//            default -> throw new RuntimeException("Unknown request type: " + requestType);
+//        };
+//    }
 
     public RemoteRequest getRequest() {
         return switch (type) {

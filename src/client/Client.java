@@ -1,8 +1,7 @@
 package client;
 
 import com.beust.jcommander.Parameter;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import common.Message;
 
 import java.io.*;
@@ -35,9 +34,29 @@ public class Client {
     public void runWithParams() {
         run(true);
     }
-
-    public  void runInteractive() {
+    public void runInteractive() {
         run(false);
+    }
+
+    private static String buildJsonRequestFromFile(String filePath) throws IOException {
+        final var jsonStr = Files.readString(Paths.get(THE_LOCATION + filePath));
+        // read into json to validate
+        final var jsonObject = gson.fromJson(jsonStr, JsonObject.class);
+        return gson.toJson(jsonObject);
+    }
+
+    private static String buildJsonRequestFromParams(String type, String key, String value) {
+        final var jsonObject = new JsonObject();
+        jsonObject.add("type", new JsonPrimitive(type));
+        jsonObject.add("key", new JsonPrimitive(key));
+        jsonObject.add("value", new JsonPrimitive(value));
+        return gson.toJson(jsonObject);
+    }
+
+    private static void sendRequest(DataOutputStream outputStream, Message request) throws IOException {
+        final var wireFormat = request.getWireFormat();
+        System.out.println("Sent: " + wireFormat);
+        outputStream.writeUTF(wireFormat);
     }
 
     private void run(boolean withParams) {
@@ -61,20 +80,15 @@ public class Client {
                 }
 
                 if (type == null || !type.equals("DONE")) {
-                    Message msgReq;
-                    // read input from file
-                    if (withParams && filePath != null && !filePath.isEmpty()) {
-                        final var inputFileData = gson.fromJson(Files.readString(Paths.get(THE_LOCATION + filePath)), InputFileData.class);
-                        msgReq = new Message(inputFileData.type, inputFileData.key, inputFileData.value);
-                    // read input from params
-                    } else {
-                        msgReq = new Message(type, key, value);
-                    }
-                    System.out.println("Sent: " + msgReq.getFooPrint());
-                    final var wireFormat = msgReq.getWireFormat();
 
-                    // send request
-                    outputStream.writeUTF(wireFormat);
+                    Message msgReq;
+                    if (withParams && filePath != null && !filePath.isEmpty()) {
+                        msgReq = new Message(buildJsonRequestFromFile(filePath));
+                    } else {
+                        msgReq = new Message(buildJsonRequestFromParams(type, key, value));
+                    }
+
+                    sendRequest(outputStream, msgReq);
 
                     // receive response
                     final var responseStr = inputStream.readUTF();

@@ -1,6 +1,6 @@
 package common.response;
 
-import client.Repackaged;
+import client.display.Repackaged;
 
 public interface RemoteResponse {
     String getResponseType();

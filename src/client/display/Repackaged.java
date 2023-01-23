@@ -1,4 +1,4 @@
-package client;
+package client.display;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,7 +28,7 @@ public class Repackaged {
         this.reason = reason;
     }
 
-    String getJson() {
+    public String getJson() {
         return gson.toJson(this);
     }
 }
