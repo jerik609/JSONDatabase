@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import static common.Message.MESSAGE_KEY_FIELD;
+import static common.Message.getKeyAsArrays;
 
 public class RemoteDeleteCommand implements Command {
     private static final Logger log = Logger.getLogger(RemoteDeleteCommand.class.getSimpleName());
@@ -31,14 +32,12 @@ public class RemoteDeleteCommand implements Command {
 
     @Override
     public void execute() {
-        log.fine("Executing command for " + payload);
+        final var keys = getKeyAsArrays(payload);
 
-        final var key = payload.getAsJsonPrimitive(MESSAGE_KEY_FIELD);
-        if (key == null) {
-            throw new RuntimeException("Payload does not contain a key: " + payload);
-        }
+        log.fine("Executing command for: " + payload + ", using keys: " + Arrays.toString(keys));
 
-        final var result = database.delete(key.getAsString());
+        final var result = database.delete(keys);
+
         if (result.getResponseCode() == ResponseCode.OK) {
             log.fine("Success for: " + payload);
             exchange.pushResponse(new Response(sessionId, new OkRemoteResponse()));

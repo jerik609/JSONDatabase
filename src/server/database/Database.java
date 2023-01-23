@@ -126,8 +126,12 @@ public class Database {
                         payload);
                 parentElement.add(searchResult.key(), payload.get("value"));
             } else {
-                log.info("update:\nno parent, root element (value), updating to:\n" + payload);
-                jsonObject.add("value", payload.get("value"));
+                //log.info("update:\nno parent, root element (value), updating to:\n" + payload);
+                //jsonObject.add("value", payload.get("value"));
+                log.info("update:\n" +
+                        "parent is not an object, but we traversed(?), inconsistency detected in DB(!):\n" +
+                        item);
+                builder.responseCode(ResponseCode.ERROR_NO_DATA);
             }
         } else {
             builder.responseCode(ResponseCode.ERROR_NO_DATA);
@@ -137,20 +141,42 @@ public class Database {
         return builder.build();
     }
 
-    public DatabaseResult<JsonObject> delete(String key) {
+    /**
+     * Delete
+     * @param keys
+     * @return
+     */
+    public DatabaseResult<JsonObject> delete(String[] keys) {
         var builder = new DatabaseResult.Builder<JsonObject>();
 
-        if (isOutOfBounds(key)) {
-            builder.responseCode(ResponseCode.ERROR_OUT_OF_BOUNDS);
-            return builder.build();
-        }
+        builder.responseCode(ResponseCode.OK);
+        builder.data(null);
 
-        if (database.containsKey(key)) {
-            builder.responseCode(ResponseCode.OK);
-            database.remove(key);
+        final JsonElement item = database.get(keys[0]);
+        if (item == null) {
+            builder.responseCode(ResponseCode.ERROR_NO_DATA);
+        } else if (keys.length == 1) {
+            database.remove(keys[0]);
+        } else if (item instanceof JsonObject jsonObject) {
+            final var searchResult = filterDataForSecondaryKeys(jsonObject, keys);
+            if (searchResult.parentElement() instanceof JsonObject parentElement) {
+                log.fine("delete:\n" +
+                        "item exists in the DB:\n" +
+                        item + "\n" +
+                        "we have found a secondary key and we will delete it");
+                parentElement.remove(searchResult.key());
+            } else {
+                //log.info("delete:\nno parent, root element (value), deleting");
+                //builder.responseCode(ResponseCode.ERROR_NO_DATA);
+                log.info("update:\n" +
+                        "parent is not an object, but we traversed(?), inconsistency detected in DB(!):\n" +
+                        item);
+                builder.responseCode(ResponseCode.ERROR_NO_DATA);
+            }
         } else {
             builder.responseCode(ResponseCode.ERROR_NO_DATA);
         }
+        log.fine("after delete:\nDB state for\nkey: " + keys[0] + "\nvalue: " + database.get(keys[0]));
 
         return builder.build();
     }
