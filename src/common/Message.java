@@ -1,8 +1,6 @@
 package common;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.google.gson.annotations.Expose;
 import common.request.*;
 import common.response.DataRemoteResponse;
@@ -11,6 +9,11 @@ import common.response.OkRemoteResponse;
 import common.response.RemoteResponse;
 import server.interfaces.common.Action;
 import server.interfaces.remote.commands.RemoteGetCommand;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Spliterators;
+import java.util.stream.Stream;
 
 public class Message {
     public static final String MESSAGE_TYPE_FIELD = "type";
@@ -52,16 +55,33 @@ public class Message {
         return gson.fromJson(jsonStr, Message.class);
     }
 
-//    private static RemoteRequest buildRequest(String requestType, String key, String value) {
-//        return switch (requestType) {
-//            case GetRemoteRequest.type -> new GetRemoteRequest(key);
-//            case SetRemoteRequest.type -> new SetRemoteRequest(key, value);
-//            case DeleteRemoteRequest.type -> new DeleteRemoteRequest(key);
-//            case ExitRemoteRequest.type -> new ExitRemoteRequest();
-//            default -> throw new RuntimeException("Unknown request type: " + requestType);
-//        };
-//    }
-
+    public static String[] getKeyAsArrays(JsonObject payload) {
+        // key is missing
+        final var key = payload.get(MESSAGE_KEY_FIELD);
+        if (key == null) {
+            throw new RuntimeException("Payload does not contain a key: " + payload);
+        }
+        // just one element
+        if (key instanceof JsonPrimitive primitiveKey) {
+            return new String[]{primitiveKey.getAsString()};
+        // multiple elements
+        } else if (key instanceof JsonArray compoundKey) {
+            final var iterator = compoundKey.iterator();
+            final ArrayList<String> array = new ArrayList<>();
+            while (iterator.hasNext()) {
+                final var element = iterator.next();
+                // only primitive types allowed
+                if (element instanceof JsonPrimitive) {
+                    array.add(element.getAsString());
+                } else {
+                    throw new RuntimeException("Invalid key type " + key);
+                }
+            }
+            return array.toArray(new String[0]);
+        } else {
+            throw new RuntimeException("Invalid key type " + key);
+        }
+    }
 
     public RemoteResponse getResponse() {
         return switch (type) {

@@ -16,7 +16,7 @@ public class GetCommand implements Command {
     @Override
     public void execute() {
         final var index = commandParams;
-        final var result = database.get(index);
+        final var result = database.get(new String[]{index});
         if (result.getResponseCode() == ResponseCode.OK) {
             System.out.println(result.getData()
                     .orElseThrow(() -> new RuntimeException("empty result despite success!?")));

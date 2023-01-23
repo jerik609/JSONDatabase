@@ -1,6 +1,7 @@
 package server.database;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -12,13 +13,19 @@ public class DatabaseGsonDeserializer implements JsonDeserializer<Database> {
         JsonObject jsonObject = json.getAsJsonObject();
 
         JsonElement jsonDatabaseCapacity = jsonObject.get("capacity");
-        JsonElement jsonDatabaseEmptyValue = jsonObject.get("emptyValue");
         JsonElement jsonDatabaseDatabase = jsonObject.get("database");
 
+
+
+
         final var capacity = jsonDatabaseCapacity == null ? 1000 : jsonDatabaseCapacity.getAsInt();
-        final var emptyValue = jsonDatabaseEmptyValue == null ? "" : jsonDatabaseEmptyValue.getAsString();
+
+        Type mapOfJsonObjects = new TypeToken<HashMap<String, JsonObject>>(){}.getType();
+
+
+
         final HashMap<String, JsonObject> database = jsonDatabaseDatabase == null ?
-                new HashMap<>(capacity) : context.deserialize(jsonDatabaseDatabase, HashMap.class);
+                new HashMap<>(capacity) : context.deserialize(jsonDatabaseDatabase, mapOfJsonObjects);
 
         return new Database(capacity, database);
     }

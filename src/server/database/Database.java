@@ -1,11 +1,17 @@
 package server.database;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.Expose;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 public class Database {
+    private static final Logger log = Logger.getLogger(Database.class.getSimpleName());
+
     @Expose
     private final int capacity;
     @Expose
@@ -28,21 +34,40 @@ public class Database {
         return database.size() + 1 > capacity;
     }
 
-    public DatabaseResult<JsonObject> get(String key) {
-        var builder = new DatabaseResult.Builder<JsonObject>();
-
-        if (isOutOfBounds(key)) {
-            builder.responseCode(ResponseCode.ERROR_OUT_OF_BOUNDS);
-            return builder.build();
+    private static JsonElement getSecondaryKeys(JsonElement value, String[] keys) {
+        log.fine("filtering by keys: " + Arrays.toString(keys) + ", value: " + value);
+        JsonElement parentElement = value; // value for first (main) key
+        String elementKey = "";
+        JsonElement element = value;
+        for (var key : keys) {
+            elementKey = key;
+            if (element instanceof JsonObject node) {
+                element = node.get(key);
+                if (element == null) {
+                    throw new RuntimeException("Key is not one of node's children: Key '" + key + "' not found!");
+                }
+                parentElement = node;
+            } else {
+                throw new RuntimeException("Trying to search past leaf: Key '" + key + "' not found!");
+            }
         }
+        log.fine("element (key:" + elementKey + ", parent: " + parentElement +"): " + element);
+        return element;
+    }
 
-        var item = database.get(key);
+    public DatabaseResult<JsonElement> get(String[] keys) {
+        final var builder = new DatabaseResult.Builder<JsonElement>();
+
+        final var item = database.get(keys[0]);
         if (item == null) {
             builder.responseCode(ResponseCode.ERROR_NO_DATA);
+            builder.data(null);
         } else {
             builder.responseCode(ResponseCode.OK);
+            final var value = item.get("value");
+            final var secondaryKeys = Arrays.copyOfRange(keys, 1, keys.length);
+            builder.data(getSecondaryKeys(value, secondaryKeys));
         }
-        builder.data(item);
 
         return builder.build();
     }

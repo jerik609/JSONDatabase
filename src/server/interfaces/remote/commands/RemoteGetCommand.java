@@ -2,6 +2,7 @@ package server.interfaces.remote.commands;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import common.response.DataRemoteResponse;
 import common.response.ErrorRemoteResponse;
@@ -14,7 +15,7 @@ import server.interfaces.remote.data.Response;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
-import static common.Message.MESSAGE_KEY_FIELD;
+import static common.Message.getKeyAsArrays;
 
 public class RemoteGetCommand implements Command {
     private static final Logger log = Logger.getLogger(RemoteGetCommand.class.getSimpleName());
@@ -33,17 +34,19 @@ public class RemoteGetCommand implements Command {
         this.payload = payload;
     }
 
+
+
     @Override
     public void execute() {
         log.fine("Executing command for " + payload);
 
-        final var key = payload.getAsJsonPrimitive(MESSAGE_KEY_FIELD);
-        if (key == null) {
-            throw new RuntimeException("Payload does not contain a key: " + payload);
-        }
+        final var keys = getKeyAsArrays(payload);
+        log.fine("Using keys: " + Arrays.toString(keys));
+
+        final var result = database.get(keys);
 
         //TODO: traverse when key is complex
-        final var result = database.get(key.getAsString());
+
         if (result.getResponseCode() == ResponseCode.OK) {
             log.fine("Success for: " + payload);
             exchange.pushResponse(
