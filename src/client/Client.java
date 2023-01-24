@@ -13,7 +13,6 @@ import java.util.Scanner;
 
 public class Client {
     private static final Gson gson = new GsonBuilder().create();
-    private static final Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
     private static final String SERVER_ADDRESS = "127.0.0.1";
     private static final int SERVER_PORT = 34567;
 
@@ -73,14 +72,13 @@ public class Client {
             // send request message
             final var request = buildRequestMessage(type, key, value, filePath);
             sendMessage(outputStream, request);
-            prettyPrint("Sent", request.getPayload());
+            printPayload("Sent", request.getPayload());
 
             // receive response message
             final var response = Message.fromJson(inputStream.readUTF());
             final var payload = response.getPayload();
-            prettyPrint("Received", payload);
+            printPayload("Received", payload);
 
-            //System.out.println();
         } catch (UnknownHostException e) {
             throw new RuntimeException("Unknown host: " + SERVER_ADDRESS + ":" + SERVER_PORT);
         } catch (IOException e) {
@@ -88,14 +86,9 @@ public class Client {
             e.printStackTrace();
             throw new RuntimeException("Client failed: " + e);
         }
-        //System.out.println("Finished!");
     }
 
-    private static void prettyPrint(String op, JsonObject obj) {
-//        if (obj.get("value") != null &&  !obj.get("value").isJsonPrimitive()) {
-//            System.out.println(op + ":\n" + prettyGson.toJson(obj));
-//        } else {
-            System.out.println(op + ": " + gson.toJson(obj));
-//        }
+    private static void printPayload(String op, JsonObject obj) {
+        System.out.println(op + ": " + gson.toJson(obj));
     }
 }
