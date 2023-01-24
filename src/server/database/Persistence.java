@@ -14,7 +14,7 @@ public class Persistence {
 
     private static final String FILENAME_TEST_ENVIRONMENT = System.getProperty("user.dir") + "/src/server/data/db.json";
     private static final String FILENAME_LOCAL_ENVIRONMENT = System.getProperty("user.dir") + "/JSON Database/task/src/server/data/db.json";
-    private static final String THE_LOCATION = FILENAME_LOCAL_ENVIRONMENT;
+    private static final String THE_LOCATION = FILENAME_TEST_ENVIRONMENT;
 
     private static final Gson gson = getGsonBuilder().create();
 
@@ -22,7 +22,7 @@ public class Persistence {
         final var gsonBuilder = new GsonBuilder();
         return gsonBuilder
                 .registerTypeAdapter(Database.class, new DatabaseGsonDeserializer())
-                //.registerTypeAdapter(Database.class, new DatabaseGsonSerializer())
+                .registerTypeAdapter(Database.class, new DatabaseGsonSerializer())
                 .excludeFieldsWithoutExposeAnnotation();
     }
 

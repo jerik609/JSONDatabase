@@ -1,1 +1,1 @@
-{"capacity":1000,"database":{"person":{"type":"set","key":"person","value":{"name":"Elon Musk","car":{"model":"Tesla Roadster","year":"2018"},"rocket":{"name":"Falcon 9","launches":"87"}}}}}
+{"capacity":1000,"database":{"1":{"type":"set","key":"1","value":"Hello world!"},"person":{"type":"set","key":"person","value":{"name":"Elon Musk","car":{"model":"Tesla Roadster"},"rocket":{"name":"Falcon 9","launches":"88"}}}}}

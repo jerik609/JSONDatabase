@@ -14,16 +14,16 @@ public class Database {
     @Expose
     private final int capacity;
     @Expose
-    private final HashMap<String, JsonElement> database;
+    private final HashMap<String, JsonObject> database;
 
-    public Database(int capacity, HashMap<String, JsonElement> database) {
+    public Database(int capacity, HashMap<String, JsonObject> database) {
         this.capacity = capacity;
         this.database = database;
     }
 
     public Database(int capacity) {
         this.capacity = capacity;
-        this.database = new HashMap<String, JsonElement>(capacity);
+        this.database = new HashMap<>(capacity);
     }
 
     private boolean isOutOfBounds(String index) {
@@ -37,7 +37,7 @@ public class Database {
         return capacity;
     }
 
-    public HashMap<String, JsonElement> getDatabase() {
+    public HashMap<String, JsonObject> getDatabase() {
         return database;
     }
 
@@ -78,18 +78,16 @@ public class Database {
         final var builder = new DatabaseResult.Builder<JsonElement>();
         builder.data(null);
 
-        final JsonElement item = database.get(keys[0]);
+        final JsonObject item = database.get(keys[0]);
 
         if (item == null) {
             builder.responseCode(ResponseCode.ERROR_NO_DATA);
         } else if (keys.length == 1) {
             builder.responseCode(ResponseCode.OK);
-            builder.data(item);
-        } else if (item instanceof JsonObject jsonObject) {
-            builder.responseCode(ResponseCode.OK);
-            builder.data(filterDataForSecondaryKeys(jsonObject, keys).element());
+            builder.data(item.get("value"));
         } else {
-            builder.responseCode(ResponseCode.ERROR_NO_DATA);
+            builder.responseCode(ResponseCode.OK);
+            builder.data(filterDataForSecondaryKeys(item, keys).element());
         }
         return builder.build();
     }
@@ -111,7 +109,7 @@ public class Database {
         builder.responseCode(ResponseCode.OK);
         builder.data(null);
 
-        final JsonElement item = database.get(keys[0]);
+        final JsonObject item = database.get(keys[0]);
         if (item == null) {
             log.fine("insert:\n" +
                     "item does not exist in database, will enter it:\n" +
@@ -124,8 +122,8 @@ public class Database {
                     "we're updating the root element to:\n" +
                     payload);
             database.put(keys[0], payload);
-        } else if (item instanceof JsonObject jsonObject) {
-            final var searchResult = filterDataForSecondaryKeys(jsonObject, keys);
+        } else {
+            final var searchResult = filterDataForSecondaryKeys(item, keys);
             if (searchResult.parentElement() instanceof JsonObject parentElement) {
                 log.fine("update:\n" +
                         "item exists in the DB:\n" +
@@ -134,15 +132,11 @@ public class Database {
                         payload);
                 parentElement.add(searchResult.key(), payload.get("value"));
             } else {
-                //log.info("update:\nno parent, root element (value), updating to:\n" + payload);
-                //jsonObject.add("value", payload.get("value"));
                 log.info("update:\n" +
                         "parent is not an object, but we traversed(?), inconsistency detected in DB(!):\n" +
                         item);
                 builder.responseCode(ResponseCode.ERROR_NO_DATA);
             }
-        } else {
-            builder.responseCode(ResponseCode.ERROR_NO_DATA);
         }
         log.fine("after update:\nDB state for\nkey: " + keys[0] + "\nvalue: " + database.get(keys[0]));
 
@@ -160,13 +154,13 @@ public class Database {
         builder.responseCode(ResponseCode.OK);
         builder.data(null);
 
-        final JsonElement item = database.get(keys[0]);
+        final JsonObject item = database.get(keys[0]);
         if (item == null) {
             builder.responseCode(ResponseCode.ERROR_NO_DATA);
         } else if (keys.length == 1) {
             database.remove(keys[0]);
-        } else if (item instanceof JsonObject jsonObject) {
-            final var searchResult = filterDataForSecondaryKeys(jsonObject, keys);
+        } else {
+            final var searchResult = filterDataForSecondaryKeys(item, keys);
             if (searchResult.parentElement() instanceof JsonObject parentElement) {
                 log.fine("delete:\n" +
                         "item exists in the DB:\n" +
@@ -174,15 +168,11 @@ public class Database {
                         "we have found a secondary key and we will delete it");
                 parentElement.remove(searchResult.key());
             } else {
-                //log.info("delete:\nno parent, root element (value), deleting");
-                //builder.responseCode(ResponseCode.ERROR_NO_DATA);
                 log.info("update:\n" +
                         "parent is not an object, but we traversed(?), inconsistency detected in DB(!):\n" +
                         item);
                 builder.responseCode(ResponseCode.ERROR_NO_DATA);
             }
-        } else {
-            builder.responseCode(ResponseCode.ERROR_NO_DATA);
         }
         log.fine("after delete:\nDB state for\nkey: " + keys[0] + "\nvalue: " + database.get(keys[0]));
 

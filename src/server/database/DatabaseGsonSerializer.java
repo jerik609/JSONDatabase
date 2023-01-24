@@ -11,7 +11,6 @@ import java.util.HashMap;
 
 public class DatabaseGsonSerializer implements JsonSerializer<Database> {
 
-
     @Override
     public JsonElement serialize(Database src, Type typeOfSrc, JsonSerializationContext context) {
 

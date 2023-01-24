@@ -19,7 +19,7 @@ public class DatabaseGsonDeserializer implements JsonDeserializer<Database> {
 
         Type mapOfJsonObjects = new TypeToken<HashMap<String, JsonObject>>(){}.getType();
 
-        final HashMap<String, JsonElement> database = jsonDatabaseDatabase == null ?
+        final HashMap<String, JsonObject> database = jsonDatabaseDatabase == null ?
                 new HashMap<>(capacity) : context.deserialize(jsonDatabaseDatabase, mapOfJsonObjects);
 
         return new Database(capacity, database);
