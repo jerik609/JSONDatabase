@@ -15,7 +15,7 @@ public class Message {
     private static Gson gsonProvider() {
         final var gsonBuilder = new GsonBuilder();
         return gsonBuilder
-                //.setPrettyPrinting()
+                .setPrettyPrinting()
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
     }
@@ -23,13 +23,41 @@ public class Message {
     @Expose
     private final String payload;
 
-    public Message(String payload) {
-        this.payload = payload;
+    public Message(JsonObject payload) {
+        this.payload = gson.toJson(payload);
     }
 
-    public Message(Response response) {
-        this.payload = gson.toJson(response.payload());
+    /**
+     * Get payload.
+     * @return payload as JsonElement
+     */
+    public JsonObject getPayload() {
+        return gson.fromJson(payload, JsonObject.class);
     }
+
+    /**
+     * Get message in wire format for transfer.
+     * @return Message serialized into JSON format
+     */
+    public String getWireFormat() {
+        return gson.toJson(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "payload(raw)='" + payload + '\'' +
+                '}';
+    }
+
+    // ==================================================
+
+    //    public Message(Response response) {
+//        this.payload = gson.toJson(response.payload());
+//    }
+//    public Message(Request request) {
+//        this.payload = gson.toJson(request.payload());
+//    }
 
     public static Message fromJson(String jsonStr) {
         return gson.fromJson(jsonStr, Message.class);
@@ -67,18 +95,5 @@ public class Message {
         return gson.fromJson(payload, JsonElement.class);
     }
 
-    public String getWireFormat() {
-        return gson.toJson(this);
-    }
 
-    public String getPayload() {
-        return payload;
-    }
-
-    @Override
-    public String toString() {
-        return "Message{" +
-                "payload='" + payload + '\'' +
-                '}';
-    }
 }

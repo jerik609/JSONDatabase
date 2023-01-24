@@ -19,7 +19,7 @@ public class Client {
 
     private static final String FILE_REQUEST_PATH_TEST_ENVIRONMENT = System.getProperty("user.dir") + "/src/client/data/";
     private static final String FILE_REQUEST_PATH_LOCAL_ENVIRONMENT = System.getProperty("user.dir") + "/JSON Database/task/src/client/data/";
-    private static final String THE_LOCATION = FILE_REQUEST_PATH_TEST_ENVIRONMENT;
+    private static final String THE_LOCATION = FILE_REQUEST_PATH_LOCAL_ENVIRONMENT;
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -32,44 +32,36 @@ public class Client {
     @Parameter(names={"--input_file", "-in"})
     String filePath = "";
 
-    public void runWithParams() {
-        run(true);
-    }
-    public void runInteractive() {
-        run(false);
-    }
-
-    private static String buildJsonRequestFromFile(String filePath) throws IOException {
+    private static JsonObject buildJsonRequestFromFile(String filePath) throws IOException {
         final var jsonStr = Files.readString(Paths.get(THE_LOCATION + filePath));
         // read into json to validate
-        final var jsonObject = gson.fromJson(jsonStr, JsonObject.class);
-        System.out.print("Sent: " + jsonStr);
-        return gson.toJson(jsonObject);
-//        if (//json instanceof JsonObject jsonObject &&
-//                json.get("value") != null &&
-//                        !json.get("value").isJsonPrimitive()) {
-//            System.out.println("Sent:\n" + prettyGson.toJson(json));
-//        } else {
-//            System.out.println("Sent: " + gson.toJson(json));
-//        }
+        return gson.fromJson(jsonStr, JsonObject.class);
     }
 
-    private static String buildJsonRequestFromParams(String type, String key, String value) {
+    private static JsonObject buildJsonRequestFromParams(String type, String key, String value) {
         final var jsonObject = new JsonObject();
         jsonObject.add("type", new JsonPrimitive(type));
         jsonObject.add("key", new JsonPrimitive(key));
         jsonObject.add("value", new JsonPrimitive(value));
-        final var jsonStr = gson.toJson(jsonObject);
-        System.out.println("Sent: " + jsonStr);
-        return jsonStr;
+        return jsonObject;
     }
 
-    private static void sendRequest(DataOutputStream outputStream, Message request) throws IOException {
+    private static Message buildRequestMessage(String type, String key, String value, String filePath) throws IOException {
+        JsonObject payload;
+        if (filePath != null && !filePath.isEmpty()) {
+            payload = buildJsonRequestFromFile(filePath);
+        } else {
+            payload = buildJsonRequestFromParams(type, key, value);
+        }
+        return new Message(payload);
+    }
+
+    private static void sendMessage(DataOutputStream outputStream, Message request) throws IOException {
         final var wireFormat = request.getWireFormat();
         outputStream.writeUTF(wireFormat);
     }
 
-    private void run(boolean withParams) {
+    public void run() {
         try (
                 final var socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
                 final var inputStream = new DataInputStream(socket.getInputStream());
@@ -78,49 +70,23 @@ public class Client {
             System.out.println("Client started!");
             socket.setSoTimeout(5000);
 
-            do {
-                if (!withParams) {
-                    System.out.println("Provide input (or DONE for type to quit):");
-                    System.out.print("type: ");
-                    type = scanner.nextLine();
-                    System.out.print("key: ");
-                    key = scanner.nextLine();
-                    System.out.print("message: ");
-                    value = scanner.nextLine();
-                }
+            // send request message
+            final var request = buildRequestMessage(type, key, value, filePath);
+            sendMessage(outputStream, request);
+            System.out.println("Sent: " + request.getPayload());
 
-                if (type == null || !type.equals("DONE")) {
+            // receive response message
+            final var response = Message.fromJson(inputStream.readUTF());
+            System.out.println("Received: " + response.getPayload());
 
-                    Message msgReq;
-                    if (withParams && filePath != null && !filePath.isEmpty()) {
-                        msgReq = new Message(buildJsonRequestFromFile(filePath));
-                    } else {
-                        msgReq = new Message(buildJsonRequestFromParams(type, key, value));
-                    }
-
-                    sendRequest(outputStream, msgReq);
-
-                    // receive response
-                    final var responseStr = inputStream.readUTF();
-                    final var message = Message.fromJson(responseStr);
-                    final var response = message.getResponse();
-
-                    if (response instanceof JsonObject jsonObject &&
-                            jsonObject.get("value") != null &&
-                            !jsonObject.get("value").isJsonPrimitive()) {
-                        System.out.println("Received:\n" + prettyGson.toJson(response));
-                    } else {
-                        System.out.println("Received: " + gson.toJson(response));
-                    }
-                    System.out.println();
-                }
-
-                // if with params, stop immediately (???)
-                if (withParams) {
-                    type = "DONE";
-                }
-
-            } while (!type.equals("DONE"));
+//                if (response instanceof JsonObject jsonObject &&
+//                        jsonObject.get("value") != null &&
+//                        !jsonObject.get("value").isJsonPrimitive()) {
+//                    System.out.println("Received:\n" + prettyGson.toJson(response));
+//                } else {
+//                    System.out.println("Received: " + gson.toJson(response));
+//                }
+//                System.out.println();
 
         } catch (UnknownHostException e) {
             throw new RuntimeException("Unknown host: " + SERVER_ADDRESS + ":" + SERVER_PORT);

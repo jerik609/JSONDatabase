@@ -59,10 +59,9 @@ public class DataReader implements Runnable {
                 final var inputStream = session.getInputStream();
                 try {
                     if (inputStream.available() > 0) {
-                        final var input = inputStream.readUTF();
-                        log.fine("[" + session.getSessionId() + "]: raw input: " + input);
-                        // enqueue request for processing
-                        exchange.pushRequest(new Request(session.getSessionId(), Message.fromJson(input)));
+                        final var message = Message.fromJson(inputStream.readUTF());
+                        log.fine("[" + session.getSessionId() + "]: received message:\n" + message);
+                        exchange.pushRequest(new Request(session.getSessionId(), message.getPayload()));
                     }
                 } catch (IOException e) {
                     log.warning("Failed to read from input stream: " + e);

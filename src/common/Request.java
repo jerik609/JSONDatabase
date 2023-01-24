@@ -1,4 +1,6 @@
 package common;
 
-public record Request(String sessionId, Message message) {
+import com.google.gson.JsonObject;
+
+public record Request(String sessionId, JsonObject payload) {
 }

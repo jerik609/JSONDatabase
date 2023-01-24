@@ -2,6 +2,7 @@ package server.interfaces.remote;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import server.interfaces.Command;
 import server.interfaces.Exchange;
@@ -68,22 +69,21 @@ public class DataWorker implements Runnable {
             exchange.takeRequest().ifPresent(
                 request -> {
                     log.fine("Working on request: " + request);
-                    executor.acceptCommand(getCommandFromRequest(request.sessionId(), request.message().getPayload()));
+                    executor.acceptCommand(getCommandFromRequest(request.sessionId(), request.payload()));
                     executor.run();
                 });
         }
         log.fine("Stopped.");
     }
 
-    private Command getCommandFromRequest(String sessionId, String payload) {
-        final var jsonObject = gson.fromJson(payload, JsonObject.class);
-        final var type = jsonObject.getAsJsonPrimitive(MESSAGE_TYPE_FIELD);
+    private Command getCommandFromRequest(String sessionId, JsonObject payload) {
+        final var type = payload.getAsJsonPrimitive(MESSAGE_TYPE_FIELD);
         if (type == null) {
-            throw new RuntimeException("Invalid message, no type was specified: " + jsonObject);
+            throw new RuntimeException("Invalid message, no type was specified: " + payload);
         }
         return remoteCommandFactory.getRemoteCommandFromRequest(
                 sessionId,
                 Action.from(type.getAsString()),
-                jsonObject);
+                payload);
     }
 }

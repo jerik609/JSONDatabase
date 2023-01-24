@@ -1,6 +1,6 @@
 package common;
 
-import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
-public record Response(String sessionId, JsonElement payload) {
+public record Response(String sessionId, JsonObject payload) {
 }
