@@ -28,8 +28,8 @@ public class Message {
     }
 
     /**
-     * Get payload.
-     * @return payload as JsonElement
+     * Get payload as JsonObject.
+     * @return payload
      */
     public JsonObject getPayload() {
         return gson.fromJson(payload, JsonObject.class);
