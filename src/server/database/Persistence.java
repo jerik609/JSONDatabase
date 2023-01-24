@@ -66,7 +66,6 @@ public class Persistence {
                 return Optional.empty();
             }
         } else {
-            System.out.println("Can't find /server/data/db.json file.");
             log.fine("Can't find file: " + THE_LOCATION);
             return Optional.empty();
         }

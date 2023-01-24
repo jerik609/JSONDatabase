@@ -80,7 +80,7 @@ public class Client {
             final var payload = response.getPayload();
             prettyPrint("Received", payload);
 
-            System.out.println();
+            //System.out.println();
         } catch (UnknownHostException e) {
             throw new RuntimeException("Unknown host: " + SERVER_ADDRESS + ":" + SERVER_PORT);
         } catch (IOException e) {
@@ -92,10 +92,10 @@ public class Client {
     }
 
     private static void prettyPrint(String op, JsonObject obj) {
-        if (obj.get("value") != null &&  !obj.get("value").isJsonPrimitive()) {
-            System.out.println(op + ":\n" + prettyGson.toJson(obj));
-        } else {
+//        if (obj.get("value") != null &&  !obj.get("value").isJsonPrimitive()) {
+//            System.out.println(op + ":\n" + prettyGson.toJson(obj));
+//        } else {
             System.out.println(op + ": " + gson.toJson(obj));
-        }
+//        }
     }
 }
