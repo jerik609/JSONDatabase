@@ -1,6 +1,5 @@
 package server;
 
-
 import java.util.logging.Level;
 
 public class Main {

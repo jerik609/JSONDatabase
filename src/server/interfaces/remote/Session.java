@@ -1,6 +1,5 @@
 package server.interfaces.remote;
 
-import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
